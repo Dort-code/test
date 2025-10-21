@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 
-function LoginPage({onLogin}) {
+export function LoginPage({onLogin}) {
     const [credentials, setCredentials] = useState({
         username: '',
         password: ''
