@@ -4,6 +4,7 @@ import {LoginPage} from './Page/LoginPage';
 import {UserPA} from './Page/UserPA';
 import {AdminPA} from './Page/AdminPA';
 import React, { useState } from 'react';
+import lg from "./lg.png";
 
 function App() {
     const [authInfo, setAuthInfo] = useState({
@@ -39,6 +40,9 @@ function App() {
         <div className="app-container">
             {!authInfo.isLoggedIn ? (
                 <header className="header">
+                    <div className="logo-container">
+                        <img src={lg} alt="lg" className="logo" />
+                    </div>
                     <button
                         className="login-btn"
                         onClick={handleLoginClick}
@@ -55,7 +59,7 @@ function App() {
 
             {!authInfo.isLoggedIn && !showLoginModal && (
                 <div className="welcome-message">
-                    <h2>Добро пожаловать в систему ХЪ</h2>
+                    <h2>Добро пожаловать в систему ХЗ</h2>
                     <p>Пожалуйста, войдите в систему для доступа к функциям</p>
                 </div>
             )}
