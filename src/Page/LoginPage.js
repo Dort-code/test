@@ -47,11 +47,7 @@ export function LoginPage({onLogin}) {
 
     return (
         <div className="App">
-            <header className="App-header">
-                <p>
-                    Доброго времени суток
-                </p>
-            </header>
+            <div>
             <form onSubmit={handleSubmit} className="login-form">
                 <h2>Вход в систему</h2>
 
@@ -86,6 +82,7 @@ export function LoginPage({onLogin}) {
                     Войти
                 </button>
             </form>
+        </div>
         </div>
     );
 }

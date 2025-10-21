@@ -39,9 +39,6 @@ function App() {
         <div className="app-container">
             {!authInfo.isLoggedIn ? (
                 <header className="header">
-                    <div className="logo-container">
-                        <img alt="Логотип ТНС Энерго" className="logo" />
-                    </div>
                     <button
                         className="login-btn"
                         onClick={handleLoginClick}
@@ -58,7 +55,7 @@ function App() {
 
             {!authInfo.isLoggedIn && !showLoginModal && (
                 <div className="welcome-message">
-                    <h2>Добро пожаловать в систему ТНС Энерго</h2>
+                    <h2>Добро пожаловать в систему ХЪ</h2>
                     <p>Пожалуйста, войдите в систему для доступа к функциям</p>
                 </div>
             )}
