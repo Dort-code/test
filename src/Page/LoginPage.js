@@ -1,88 +1,148 @@
 import React, { useState } from 'react';
-import { FaSignInAlt } from 'react-icons/fa';
 
-export function LoginPage({onLogin}) {
-    const [credentials, setCredentials] = useState({
+export function LoginPage({ onLogin, onClose }) {
+    const [loginData, setLoginData] = useState({
         username: '',
         password: ''
     });
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setCredentials(prev => ({
+        setLoginData(prev => ({
             ...prev,
             [name]: value
         }));
+        // Очищаем ошибку при изменении поля
+        if (error) setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!loginData.username || !loginData.password) {
+            setError('Заполните все поля');
+            return;
+        }
+
+        setIsLoading(true);
         setError('');
 
-        // Функция проверки учетных данных с определением роли
-        const authResult = mockAuthCheck(credentials.username, credentials.password);
+        try {
+            // Имитация запроса к серверу
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-        if (authResult.authenticated) {
-            onLogin(authResult.role);
-        } else {
-            setError('Неверное имя пользователя или пароль');
+            // Простая логика авторизации
+            let role = 'user';
+            if (loginData.username.toLowerCase() === 'admin') {
+                role = 'admin';
+            }
+
+            // Вызываем колбэк с ролью пользователя
+            onLogin(role);
+
+        } catch (err) {
+            setError('Ошибка при входе в систему');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    // Функция-заглушка для проверки учетных данных с ролями
-    const mockAuthCheck = (username, password) => {
-        // В реальном приложении здесь будет запрос к серверу
-        if (username === 'admin' && password === 'admin123') {
-            return { authenticated: true, role: 'admin' };
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+            onClose();
         }
-        if (username === 'pred' && password === 'pred123') {
-            return { authenticated: true, role: 'pred' };
-        }
-        if (username === 'user' && password === 'user123') {
-            return { authenticated: true, role: 'user' };
-        }
-        return { authenticated: false };
     };
 
     return (
-        <div className="App">
-            <div>
-            <form onSubmit={handleSubmit} className="login-form">
-                <h2>Вход в систему</h2>
-
-                <div className="form-group">
-                    <label htmlFor="username">Имя пользователя:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={credentials.username}
-                        onChange={handleChange}
-                        required
-                    />
+        <div
+            className="modal-overlay"
+            onKeyDown={handleKeyDown}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="login-title"
+        >
+            <div className="login-window">
+                <div className="modal-header">
+                    <h2 id="login-title">Вход в систему</h2>
+                    <button
+                        type="button"
+                        className="close-btn"
+                        onClick={onClose}
+                        aria-label="Закрыть окно входа"
+                        disabled={isLoading}
+                    >
+                        ×
+                    </button>
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="password">Пароль:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        required
-                    />
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="form-group">
+                        <label htmlFor="login-username">Имя пользователя</label>
+                        <input
+                            type="text"
+                            id="login-username"
+                            name="username"
+                            value={loginData.username}
+                            onChange={handleChange}
+                            required
+                            placeholder="Введите имя пользователя"
+                            disabled={isLoading}
+                            autoComplete="username"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="login-password">Пароль</label>
+                        <input
+                            type="password"
+                            id="login-password"
+                            name="password"
+                            value={loginData.password}
+                            onChange={handleChange}
+                            required
+                            placeholder="Введите пароль"
+                            disabled={isLoading}
+                            autoComplete="current-password"
+                        />
+                    </div>
+
+                    {error && (
+                        <div className="form-error">
+                            <span className="error-text">{error}</span>
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="submit-btn"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <>
+                                <span className="loading-spinner" aria-hidden="true"></span>
+                                Вход...
+                            </>
+                        ) : (
+                            'Войти в систему'
+                        )}
+                    </button>
+                </form>
+
+                <div className="modal-footer">
+                    <p>
+                        Нет аккаунта?{' '}
+                        <button
+                            type="button"
+                            className="link-btn"
+                            onClick={onClose}
+                        >
+                            Зарегистрируйтесь
+                        </button>
+                    </p>
                 </div>
-
-                {error && <div className="error-message">{error}</div>}
-
-                <button type="submit" className="login-btn">
-                    <FaSignInAlt size={16} />
-                    Войти
-                </button>
-            </form>
-        </div>
+            </div>
         </div>
     );
 }
