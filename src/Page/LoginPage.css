@@ -139,3 +139,88 @@
 input[type="tel"] {
     font-family: 'Arial', 'Helvetica', sans-serif;
 }
+
+/* Стили для сообщений об ошибках */
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ffcdd2;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Стили для состояния загрузки */
+.submit-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.submit-btn:disabled:hover {
+    box-shadow: none;
+    transform: none;
+}
+
+/* Стили для быстрого входа (можно удалить в продакшене) */
+.quick-login {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.quick-login h4 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.quick-login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-btn {
+    padding: 10px;
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.quick-btn:hover {
+    background: #e0e0e0;
+    border-color: #0033a0;
+}
+
+.quick-btn:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Стили для ссылок */
+.login-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: #0033a0;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.link-btn:hover {
+    color: #0054a6;
+}
