@@ -1,148 +1,67 @@
 import React, { useState } from 'react';
+import './LoginPage.css';
 
-export function LoginPage({ onLogin, onClose }) {
-    const [loginData, setLoginData] = useState({
-        username: '',
+const LoginPage = () => {
+    const [formData, setFormData] = useState({
+        login: '',
         password: ''
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setLoginData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        // Очищаем ошибку при изменении поля
-        if (error) setError('');
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-
-        if (!loginData.username || !loginData.password) {
-            setError('Заполните все поля');
-            return;
-        }
-
-        setIsLoading(true);
-        setError('');
-
-        try {
-            // Имитация запроса к серверу
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Простая логика авторизации
-            let role = 'user';
-            if (loginData.username.toLowerCase() === 'admin') {
-                role = 'admin';
-            }
-
-            // Вызываем колбэк с ролью пользователя
-            onLogin(role);
-
-        } catch (err) {
-            setError('Ошибка при входе в систему');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            onClose();
-        }
+        // Здесь будет логика проверки логина/пароля
+        console.log('Login data:', formData);
     };
 
     return (
-        <div
-            className="modal-overlay"
-            onKeyDown={handleKeyDown}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="login-title"
-        >
-            <div className="login-window">
-                <div className="modal-header">
-                    <h2 id="login-title">Вход в систему</h2>
-                    <button
-                        type="button"
-                        className="close-btn"
-                        onClick={onClose}
-                        aria-label="Закрыть окно входа"
-                        disabled={isLoading}
-                    >
-                        ×
-                    </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="login-form">
+        <div className="form-container">
+            <div className="form-wrapper">
+                <h2 className="form-title">Вход в систему</h2>
+                <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
-                        <label htmlFor="login-username">Имя пользователя</label>
+                        <label htmlFor="login" className="form-label">
+                            Логин или Email
+                        </label>
                         <input
                             type="text"
-                            id="login-username"
-                            name="username"
-                            value={loginData.username}
+                            id="login"
+                            name="login"
+                            value={formData.login}
                             onChange={handleChange}
+                            className="form-input"
                             required
-                            placeholder="Введите имя пользователя"
-                            disabled={isLoading}
-                            autoComplete="username"
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="login-password">Пароль</label>
+                        <label htmlFor="password" className="form-label">
+                            Пароль
+                        </label>
                         <input
                             type="password"
-                            id="login-password"
+                            id="password"
                             name="password"
-                            value={loginData.password}
+                            value={formData.password}
                             onChange={handleChange}
+                            className="form-input"
                             required
-                            placeholder="Введите пароль"
-                            disabled={isLoading}
-                            autoComplete="current-password"
                         />
                     </div>
 
-                    {error && (
-                        <div className="form-error">
-                            <span className="error-text">{error}</span>
-                        </div>
-                    )}
-
-                    <button
-                        type="submit"
-                        className="submit-btn"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <>
-                                <span className="loading-spinner" aria-hidden="true"></span>
-                                Вход...
-                            </>
-                        ) : (
-                            'Войти в систему'
-                        )}
+                    <button type="submit" className="submit-btn">
+                        Войти
                     </button>
                 </form>
-
-                <div className="modal-footer">
-                    <p>
-                        Нет аккаунта?{' '}
-                        <button
-                            type="button"
-                            className="link-btn"
-                            onClick={onClose}
-                        >
-                            Зарегистрируйтесь
-                        </button>
-                    </p>
-                </div>
             </div>
         </div>
     );
-}
+};
+
+export default LoginPage;

@@ -1,91 +1,69 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { countries } from '../countries';
+import React, { useState } from 'react';
+import './LoginPage.css';
 
-export function RegisterPage({ onRegister, onClose }) {
+const RegisterPage = () => {
     const [formData, setFormData] = useState({
-        username: '',
-        email: '',
+        Name: '',
         phone: '',
+        department: '',
+        login: '',
+        email: '',
         password: '',
         confirmPassword: ''
     });
 
-    const [selectedCountry, setSelectedCountry] = useState(countries[0]);
-    const [showCountryDropdown, setShowCountryDropdown] = useState(false);
     const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const dropdownRef = useRef(null);
-    const modalRef = useRef(null);
-
-    // Закрытие dropdown при клике вне его
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setShowCountryDropdown(false);
-            }
-
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                onClose();
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [onClose]);
-
-    // Блокировка скролла body при открытом модальном окне
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, []);
+    const departments = [
+        'Отдел IT',
+        'Отдел продаж',
+        'Бухгалтерия',
+        'Отдел кадров',
+        'Техническая поддержка',
+        'Администрация'
+    ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
+        setFormData({
+            ...formData,
             [name]: value
-        }));
+        });
 
+        // Очищаем ошибку при изменении поля
         if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
+            setErrors({
+                ...errors,
                 [name]: ''
-            }));
+            });
         }
-    };
-
-    const handlePhoneChange = (e) => {
-        const value = e.target.value.replace(/\D/g, '').slice(0, 15);
-        setFormData(prev => ({
-            ...prev,
-            phone: value
-        }));
-
-        if (errors.phone) {
-            setErrors(prev => ({
-                ...prev,
-                phone: ''
-            }));
-        }
-    };
-
-    const handleCountrySelect = (country) => {
-        setSelectedCountry(country);
-        setShowCountryDropdown(false);
     };
 
     const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.username.trim()) {
-            newErrors.username = 'Имя пользователя обязательно';
-        } else if (formData.username.length < 3) {
-            newErrors.username = 'Имя должно быть не менее 3 символов';
+        // Валидация ФИО (исправлено с lastName на Name)
+        if (!formData.Name.trim()) {
+            newErrors.Name = 'ФИО обязательно';
+        }
+
+        // Валидация телефона
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Телефон обязателен';
+        } else if (!/^(\+7|8)[\s\-]?\(?[0-9]{3}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/.test(formData.phone.replace(/\s/g, ''))) {
+            newErrors.phone = 'Введите корректный номер телефона';
+        }
+
+        // Валидация отдела
+        if (!formData.department) {
+            newErrors.department = 'Выберите отдел';
+        }
+
+        // Валидация логина/email
+        if (!formData.login.trim()) {
+            newErrors.login = 'Логин обязателен';
+        } else if (formData.login.length < 3) {
+            newErrors.login = 'Логин должен содержать минимум 3 символа';
         }
 
         if (!formData.email.trim()) {
@@ -94,20 +72,15 @@ export function RegisterPage({ onRegister, onClose }) {
             newErrors.email = 'Введите корректный email';
         }
 
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Номер телефона обязателен';
-        } else if (formData.phone.length < 10) {
-            newErrors.phone = 'Номер телефона должен содержать не менее 10 цифр';
-        }
-
+        // Валидация паролей
         if (!formData.password) {
             newErrors.password = 'Пароль обязателен';
         } else if (formData.password.length < 6) {
-            newErrors.password = 'Пароль должен быть не менее 6 символов';
+            newErrors.password = 'Пароль должен содержать минимум 6 символов';
         }
 
         if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Подтвердите пароль';
+            newErrors.confirmPassword = 'Подтверждение пароля обязательно';
         } else if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Пароли не совпадают';
         }
@@ -116,312 +89,191 @@ export function RegisterPage({ onRegister, onClose }) {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
+    const handlePhoneChange = (e) => {
+        const value = e.target.value;
+        const numbers = value.replace(/\D/g, '');
+
+        let formattedValue = value;
+        if (numbers.length <= 1) {
+            formattedValue = numbers ? '+7' : '';
+        } else if (numbers.length <= 4) {
+            formattedValue = `+7 (${numbers.slice(1, 4)}`;
+        } else if (numbers.length <= 7) {
+            formattedValue = `+7 (${numbers.slice(1, 4)}) ${numbers.slice(4, 7)}`;
+        } else if (numbers.length <= 9) {
+            formattedValue = `+7 (${numbers.slice(1, 4)}) ${numbers.slice(4, 7)}-${numbers.slice(7, 9)}`;
+        } else {
+            formattedValue = `+7 (${numbers.slice(1, 4)}) ${numbers.slice(4, 7)}-${numbers.slice(7, 9)}-${numbers.slice(9, 11)}`;
+        }
+
+        setFormData({
+            ...formData,
+            phone: formattedValue
+        });
+
+        if (errors.phone) {
+            setErrors({
+                ...errors,
+                phone: ''
+            });
+        }
+    };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!validateForm() || isSubmitting) {
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            const userData = {
+        if (validateForm()) {
+            // Логика успешной регистрации
+            const submitData = {
                 ...formData,
-                country: selectedCountry,
-                fullPhone: selectedCountry.dialCode + formData.phone
+                phone: formData.phone.replace(/\D/g, '') // Сохраняем только цифры
             };
-
-            console.log('Регистрация пользователя:', userData);
-
-            if (onRegister) {
-                onRegister(userData);
-            }
-        } catch (error) {
-            console.error('Ошибка регистрации:', error);
-            setErrors({ submit: 'Произошла ошибка при регистрации. Попробуйте еще раз.' });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const formatPhoneDisplay = (phone) => {
-        if (!phone) return '';
-
-        const cleaned = phone.replace(/\D/g, '');
-        if (cleaned.length <= 3) return cleaned;
-        if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
-        if (cleaned.length <= 8) return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
-
-        return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6, 8)}-${cleaned.slice(8)}`;
-    };
-
-    const toggleCountryDropdown = () => {
-        setShowCountryDropdown(prev => !prev);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            onClose();
+            console.log('Registration data:', submitData);
+            alert('Регистрация успешна!');
         }
     };
 
     return (
-        <div
-            className="modal-overlay"
-            onKeyDown={handleKeyDown}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="register-title"
-        >
-            <div
-                className="register-window"
-                ref={modalRef}
-            >
-                <div className="modal-header">
-                    <h2 id="register-title">Создать аккаунт</h2>
-                    <button
-                        type="button"
-                        className="close-btn"
-                        onClick={onClose}
-                        aria-label="Закрыть окно регистрации"
-                        disabled={isSubmitting}
-                    >
-                        ×
-                    </button>
-                </div>
-
-                <form
-                    onSubmit={handleSubmit}
-                    className="register-form"
-                    noValidate
-                >
+        <div className="form-container">
+            <div className="form-wrapper registration-wrapper">
+                <h2 className="form-title">Регистрация</h2>
+                <form onSubmit={handleSubmit} className="auth-form">
+                    {/* ФИО поле */}
                     <div className="form-group">
-                        <label htmlFor="username">
-                            Имя пользователя
+                        <label htmlFor="Name" className="form-label">
+                            ФИО *
                         </label>
                         <input
                             type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
+                            id="Name"
+                            name="Name"
+                            value={formData.Name}
                             onChange={handleChange}
+                            className={`form-input ${errors.Name ? 'error' : ''}`}
                             required
-                            placeholder="Придумайте имя пользователя"
-                            className={errors.username ? 'error' : ''}
-                            aria-describedby={errors.username ? 'username-error' : undefined}
-                            disabled={isSubmitting}
                         />
-                        {errors.username && (
-                            <span id="username-error" className="error-text">
-                                {errors.username}
-                            </span>
-                        )}
+                        {errors.Name && <span className="error-message">{errors.Name}</span>}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="email">
-                            Электронная почта
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            placeholder="your@email.com"
-                            className={errors.email ? 'error' : ''}
-                            aria-describedby={errors.email ? 'email-error' : undefined}
-                            disabled={isSubmitting}
-                        />
-                        {errors.email && (
-                            <span id="email-error" className="error-text">
-                                {errors.email}
-                            </span>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="phone">
-                            Номер телефона
-                        </label>
-                        <div className="phone-input-container">
-                            <div
-                                className="country-selector"
-                                onClick={toggleCountryDropdown}
-                                role="button"
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        toggleCountryDropdown();
-                                    }
-                                }}
-                                aria-haspopup="listbox"
-                                aria-expanded={showCountryDropdown}
-                                aria-label={`Выбрана страна: ${selectedCountry.name}, код: ${selectedCountry.dialCode}`}
-                                disabled={isSubmitting}
-                            >
-                                <span className="country-flag" aria-hidden="true">
-                                    {selectedCountry.flag}
-                                </span>
-                                <span className="country-code">
-                                    {selectedCountry.dialCode}
-                                </span>
-                                <span
-                                    className="dropdown-arrow"
-                                    aria-hidden="true"
-                                    style={{
-                                        transform: showCountryDropdown ? 'rotate(180deg)' : 'none'
-                                    }}
-                                >
-                                    ▼
-                                </span>
-                            </div>
-
+                    {/* Телефон и отдел */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="phone" className="form-label">
+                                Телефон *
+                            </label>
                             <input
                                 type="tel"
                                 id="phone"
                                 name="phone"
-                                value={formatPhoneDisplay(formData.phone)}
+                                value={formData.phone}
                                 onChange={handlePhoneChange}
+                                placeholder="+7 (999) 123-45-67"
+                                className={`form-input ${errors.phone ? 'error' : ''}`}
                                 required
-                                placeholder="999-123-45-67"
-                                className={`phone-input ${errors.phone ? 'error' : ''}`}
-                                aria-describedby={errors.phone ? 'phone-error' : undefined}
-                                disabled={isSubmitting}
                             />
+                            {errors.phone && <span className="error-message">{errors.phone}</span>}
                         </div>
 
-                        {showCountryDropdown && (
-                            <div
-                                className="country-dropdown"
-                                ref={dropdownRef}
-                                role="listbox"
-                                aria-label="Выбор страны"
+                        <div className="form-group">
+                            <label htmlFor="department" className="form-label">
+                                Отдел *
+                            </label>
+                            <select
+                                id="department"
+                                name="department"
+                                value={formData.department}
+                                onChange={handleChange}
+                                className={`form-input ${errors.department ? 'error' : ''}`}
+                                required
                             >
-                                {countries.map(country => (
-                                    <div
-                                        key={country.code}
-                                        className="country-option"
-                                        onClick={() => handleCountrySelect(country)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                e.preventDefault();
-                                                handleCountrySelect(country);
-                                            }
-                                        }}
-                                        role="option"
-                                        aria-selected={selectedCountry.code === country.code}
-                                        tabIndex={0}
-                                    >
-                <span className="country-flag-option" aria-hidden="true">
-                    {country.flag}
-                </span>
-                                        <span className="country-name">
-                    {country.name}
-                </span>
-                                        <span className="country-dial-code">
-                    {country.dialCode}
-                </span>
-                                    </div>
+                                <option value="">Выберите отдел</option>
+                                {departments.map((dept, index) => (
+                                    <option key={index} value={dept}>
+                                        {dept}
+                                    </option>
                                 ))}
-                            </div>
-                        )}
-
-                        {errors.phone && (
-                            <span id="phone-error" className="error-text">
-                                {errors.phone}
-                            </span>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">
-                            Пароль
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            placeholder="Не менее 6 символов"
-                            className={errors.password ? 'error' : ''}
-                            aria-describedby={errors.password ? 'password-error' : undefined}
-                            disabled={isSubmitting}
-                        />
-                        {errors.password && (
-                            <span id="password-error" className="error-text">
-                                {errors.password}
-                            </span>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">
-                            Подтверждение пароля
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                            placeholder="Повторите ваш пароль"
-                            className={errors.confirmPassword ? 'error' : ''}
-                            aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                            disabled={isSubmitting}
-                        />
-                        {errors.confirmPassword && (
-                            <span id="confirmPassword-error" className="error-text">
-                                {errors.confirmPassword}
-                            </span>
-                        )}
-                    </div>
-
-                    {errors.submit && (
-                        <div className="form-error">
-                            <span className="error-text">{errors.submit}</span>
+                            </select>
+                            {errors.department && <span className="error-message">{errors.department}</span>}
                         </div>
-                    )}
+                    </div>
 
-                    <button
-                        type="submit"
-                        className="submit-btn"
-                        disabled={isSubmitting}
-                        aria-busy={isSubmitting}
-                    >
-                        {isSubmitting ? (
-                            <>
-                                <span className="loading-spinner" aria-hidden="true"></span>
-                                Регистрация...
-                            </>
-                        ) : (
-                            'Создать аккаунт'
-                        )}
+                    {/* Логин и email */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="login" className="form-label">
+                                Логин *
+                            </label>
+                            <input
+                                type="text"
+                                id="login"
+                                name="login"
+                                value={formData.login}
+                                onChange={handleChange}
+                                className={`form-input ${errors.login ? 'error' : ''}`}
+                                required
+                            />
+                            {errors.login && <span className="error-message">{errors.login}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="email" className="form-label">
+                                Email *
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className={`form-input ${errors.email ? 'error' : ''}`}
+                                required
+                            />
+                            {errors.email && <span className="error-message">{errors.email}</span>}
+                        </div>
+                    </div>
+
+                    {/* Пароли */}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="password" className="form-label">
+                                Пароль *
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className={`form-input ${errors.password ? 'error' : ''}`}
+                                required
+                            />
+                            {errors.password && <span className="error-message">{errors.password}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword" className="form-label">
+                                Подтверждение пароля *
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
+                                required
+                            />
+                            {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+                        </div>
+                    </div>
+
+                    <button type="submit" className="submit-btn">
+                        Зарегистрироваться
                     </button>
                 </form>
-
-                <div className="modal-footer">
-                    <p>
-                        Уже есть аккаунт?{' '}
-                        <button
-                            type="button"
-                            className="link-btn"
-                            onClick={onClose}
-                            disabled={isSubmitting}
-                        >
-                            Войти в систему
-                        </button>
-                    </p>
-                </div>
             </div>
         </div>
     );
-}
+};
+
+export default RegisterPage;
