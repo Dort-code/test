@@ -195,10 +195,7 @@ const RegisterPage = () => {
                             </select>
                             {errors.department && <span className="error-message">{errors.department}</span>}
                         </div>
-                    </div>
 
-                    {/* Логин и email */}
-                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="login" className="form-label">
                                 Логин *
@@ -214,7 +211,10 @@ const RegisterPage = () => {
                             />
                             {errors.login && <span className="error-message">{errors.login}</span>}
                         </div>
+                    </div>
 
+                    {/* Логин и email */}
+                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="email" className="form-label">
                                 Email *
@@ -230,10 +230,7 @@ const RegisterPage = () => {
                             />
                             {errors.email && <span className="error-message">{errors.email}</span>}
                         </div>
-                    </div>
 
-                    {/* Пароли */}
-                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="password" className="form-label">
                                 Пароль *
