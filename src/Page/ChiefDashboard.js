@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './HeadOfDepartmentDashboard.css';
 
 const ChiefDashboard = () => {
-    const [activeTab, setActiveTab] = useState('employees');
+    const [activeTab, setActiveTab] = useState('department-efficiency');
     const [employees, setEmployees] = useState([]);
     const [projects, setProjects] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
@@ -12,6 +12,35 @@ const ChiefDashboard = () => {
         description: '',
         assigned_to: ''
     });
+
+    // Добавляем в состояния компонента ChiefDashboard
+    const [taskStatusFilter, setTaskStatusFilter] = useState('all');
+
+    // Текущий пользователь (Chief)
+    const currentUser = {
+        id: 100,
+        name: 'Сергеев С.С.',
+        position: 'Начальник отдела',
+        department: 'Руководство',
+        role: 'chief'
+    };
+
+    // Функция для фильтрации заданий по статусу
+    const filteredTasks = tasks.filter(task => {
+        if (taskStatusFilter === 'all') return true;
+        return task.status === taskStatusFilter;
+    });
+
+    // Функция для получения текста статуса фильтра
+    const getStatusFilterText = (filter) => {
+        const texts = {
+            'all': 'Все статусы',
+            'new': 'Новые',
+            'accepted': 'В работе',
+            'completed': 'Выполненные'
+        };
+        return texts[filter] || filter;
+    };
 
     // Состояния для поиска и фильтров
     const [searchTerm, setSearchTerm] = useState('');
@@ -68,6 +97,30 @@ const ChiefDashboard = () => {
             revenue: 5200000,
             costs: 1100000,
             role: 'head_of_department'
+        },
+        {
+            id: 5,
+            name: 'Николаев Дмитрий Сергеевич',
+            position: 'Менеджер',
+            department: 'Отдел маркетинга',
+            efficiency: 82,
+            completedProjects: 10,
+            currentProjects: 3,
+            revenue: 3800000,
+            costs: 950000,
+            role: 'manager'
+        },
+        {
+            id: 6,
+            name: 'Орлова Елена Викторовна',
+            position: 'Старший аналитик',
+            department: 'Аналитический отдел',
+            efficiency: 91,
+            completedProjects: 20,
+            currentProjects: 4,
+            revenue: 6100000,
+            costs: 1300000,
+            role: 'manager'
         }
     ];
 
@@ -122,17 +175,19 @@ const ChiefDashboard = () => {
         {
             id: 1,
             description: 'Проанализировать эффективность работы отдела продаж за последний квартал',
-            created_by: 'chief',
+            created_by: 'Сергеев С.С.',
+            created_by_id: 100,
             assigned_to: 'Сидорова М.С.',
             assigned_to_id: 3,
-            status: 'new', // 'new', 'accepted', 'completed'
+            status: 'new',
             created_at: '2024-03-15',
             completed_at: null
         },
         {
             id: 2,
             description: 'Подготовить отчет по внедрению новых бизнес-процессов',
-            created_by: 'chief',
+            created_by: 'Сергеев С.С.',
+            created_by_id: 100,
             assigned_to: 'Козлов А.В.',
             assigned_to_id: 4,
             status: 'completed',
@@ -147,6 +202,43 @@ const ChiefDashboard = () => {
         setProjects(mockProjects);
         setTasks(mockTasks);
     }, []);
+
+    // Функция для расчета статистики по отделам
+    const getDepartmentStats = () => {
+        const departments = {};
+
+        employees.forEach(employee => {
+            if (!departments[employee.department]) {
+                departments[employee.department] = {
+                    name: employee.department,
+                    employeeCount: 0,
+                    totalEfficiency: 0,
+                    totalRevenue: 0,
+                    totalCosts: 0,
+                    totalProjects: 0,
+                    employees: []
+                };
+            }
+
+            departments[employee.department].employeeCount++;
+            departments[employee.department].totalEfficiency += employee.efficiency;
+            departments[employee.department].totalRevenue += employee.revenue;
+            departments[employee.department].totalCosts += employee.costs;
+            departments[employee.department].totalProjects += employee.completedProjects + employee.currentProjects;
+            departments[employee.department].employees.push(employee);
+        });
+
+        // Рассчитываем среднюю эффективность для каждого отдела
+        Object.values(departments).forEach(dept => {
+            dept.averageEfficiency = Math.round(dept.totalEfficiency / dept.employeeCount);
+            dept.profitability = dept.totalRevenue > 0 ?
+                Math.round(((dept.totalRevenue - dept.totalCosts) / dept.totalRevenue) * 100) : 0;
+        });
+
+        return Object.values(departments);
+    };
+
+    const departmentStats = getDepartmentStats();
 
     // Функции для фильтрации и поиска
     const filteredProjects = projects.filter(project => {
@@ -248,7 +340,8 @@ const ChiefDashboard = () => {
         const newTaskObj = {
             id: Date.now(),
             description: newTask.description,
-            created_by: 'chief',
+            created_by: currentUser.name, // ФИО текущего пользователя
+            created_by_id: currentUser.id,
             assigned_to: assignedEmployee.name,
             assigned_to_id: assignedEmployee.id,
             status: 'new',
@@ -263,26 +356,6 @@ const ChiefDashboard = () => {
         });
 
         alert('Задание успешно создано!');
-    };
-
-    // Функция для принятия задания (имитация ответа от head_of_department)
-    const acceptTask = (taskId) => {
-        setTasks(prev => prev.map(task =>
-            task.id === taskId ? { ...task, status: 'accepted' } : task
-        ));
-        alert('Задание принято к исполнению!');
-    };
-
-    // Функция для отметки задания как выполненного (имитация ответа от head_of_department)
-    const completeTask = (taskId) => {
-        setTasks(prev => prev.map(task =>
-            task.id === taskId ? {
-                ...task,
-                status: 'completed',
-                completed_at: new Date().toISOString().split('T')[0]
-            } : task
-        ));
-        alert('Задание отмечено как выполненное!');
     };
 
     // Функция для расчета эффективности
@@ -324,16 +397,16 @@ const ChiefDashboard = () => {
             <header className="dashboard-header">
                 <h1>Панель управления начальника отдела</h1>
                 <div className="user-info">
-                    <span>Начальник отдела: Сергеев С.С. (Chief)</span>
+                    <span>Начальник отдела: {currentUser.name}</span>
                 </div>
             </header>
 
             <nav className="chief-nav">
                 <button
-                    className={`nav-btn ${activeTab === 'employees' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('employees')}
+                    className={`nav-btn ${activeTab === 'department-efficiency' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('department-efficiency')}
                 >
-                    Рабочие
+                    Эффективность отделов
                 </button>
                 <button
                     className={`nav-btn ${activeTab === 'reports' ? 'active' : ''}`}
@@ -362,37 +435,99 @@ const ChiefDashboard = () => {
             </nav>
 
             <main className="dashboard-main">
-                {/* Вкладка Рабочие */}
-                {activeTab === 'employees' && (
-                    <div className="employees-tab">
-                        <h2>Список работников отдела</h2>
-                        <div className="employees-grid">
-                            {employees.map(employee => (
-                                <div key={employee.id} className="employee-card">
-                                    <div className="employee-header">
-                                        <h3>{employee.name}</h3>
-                                        <span className={`role-badge ${employee.role}`}>
-                                            {employee.role === 'head_of_department' ? 'Глава отдела' :
-                                                employee.role === 'manager' ? 'Менеджер' : 'Сотрудник'}
-                                        </span>
-                                        <span className={`efficiency-badge efficiency-${Math.floor(employee.efficiency / 20)}`}>
-                                            {employee.efficiency}%
-                                        </span>
+                {activeTab === 'department-efficiency' && (
+                    <div className="department-efficiency-tab">
+                        <div className="departments-header">
+                            <h1>Эффективность отделов</h1>
+                        </div>
+
+                        <div className="departments-stats-overview">
+                            <div className="stats-grid">
+                                <div className="stat-card">
+                                    <h3>Всего отделов</h3>
+                                    <span className="stat-number">{departmentStats.length}</span>
+                                </div>
+                                <div className="stat-card">
+                                    <h3>Общая выручка</h3>
+                                    <span className="stat-number">
+                        {departmentStats.reduce((sum, dept) => sum + dept.totalRevenue, 0).toLocaleString()} ₽
+                    </span>
+                                </div>
+                                <div className="stat-card">
+                                    <h3>Средняя эффективность</h3>
+                                    <span className="stat-number">
+                        {Math.round(departmentStats.reduce((sum, dept) => sum + dept.averageEfficiency, 0) / departmentStats.length)}%
+                    </span>
+                                </div>
+                                <div className="stat-card">
+                                    <h3>Всего сотрудников</h3>
+                                    <span className="stat-number">
+                        {departmentStats.reduce((sum, dept) => sum + dept.employeeCount, 0)}
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="departments-list">
+                            {departmentStats.map((department, index) => (
+                                <div key={department.name} className="department-group">
+                                    <div className="department-header">
+                                        <div className="department-title">
+                                            <h2>{department.name}</h2>
+                                            <span className="department-efficiency-badge">
+                                {department.averageEfficiency}%
+                            </span>
+                                        </div>
                                     </div>
-                                    <div className="employee-info">
-                                        <p><strong>Должность:</strong> {employee.position}</p>
-                                        <p><strong>Отдел:</strong> {employee.department}</p>
-                                        <p><strong>Завершено проектов:</strong> {employee.completedProjects}</p>
-                                        <p><strong>Текущие проекты:</strong> {employee.currentProjects}</p>
-                                        <p><strong>Выручка:</strong> {employee.revenue.toLocaleString()} ₽</p>
-                                        <p><strong>Затраты:</strong> {employee.costs.toLocaleString()} ₽</p>
-                                        <p><strong>Эффективность:</strong> {calculateEfficiency(employee)}%</p>
+
+                                    <div className="department-stats">
+                                        <div className="stats-row">
+                                            <div className="stat-item">
+                                                <span className="stat-label">Сотрудников</span>
+                                                <span className="stat-value">{department.employeeCount}</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Выручка</span>
+                                                <span className="stat-value highlight">{department.totalRevenue.toLocaleString()} ₽</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Затраты</span>
+                                                <span className="stat-value">{department.totalCosts.toLocaleString()} ₽</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Проекты</span>
+                                                <span className="stat-value">{department.totalProjects}</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Рентабельность</span>
+                                                <span className="stat-value profitability">{department.profitability}%</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="employee-stats">
-                                        <div className="stat-bar">
+
+                                    <div className="department-employees">
+                                        <h3 className="employees-title">Сотрудники отдела:</h3>
+                                        <div className="employees-grid">
+                                            {department.employees.map(employee => (
+                                                <div key={employee.id} className="employee-card">
+                                                    <span className="employee-name">{employee.name}</span>
+                                                    <span className={`employee-efficiency efficiency-${Math.floor(employee.efficiency / 20)}`}>
+                                        {employee.efficiency}%
+                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="department-progress">
+                                        <div className="progress-info">
+                                            <span>Эффективность отдела</span>
+                                            <span>{department.averageEfficiency}%</span>
+                                        </div>
+                                        <div className="progress-bar">
                                             <div
-                                                className="stat-fill"
-                                                style={{width: `${employee.efficiency}%`}}
+                                                className="progress-fill"
+                                                style={{width: `${department.averageEfficiency}%`}}
                                             ></div>
                                         </div>
                                     </div>
@@ -625,7 +760,25 @@ const ChiefDashboard = () => {
 
                             {/* Список заданий */}
                             <div className="tasks-list-section">
-                                <h3>Мои задания</h3>
+                                <div className="tasks-header">
+                                    <h3>Мои задания</h3>
+                                    <div className="tasks-controls">
+                                        <div className="sort-filter">
+                                            <label>Сортировка по статусу:</label>
+                                            <select
+                                                value={taskStatusFilter}
+                                                onChange={(e) => setTaskStatusFilter(e.target.value)}
+                                                className="status-filter-select"
+                                            >
+                                                <option value="all">Все статусы</option>
+                                                <option value="new">Новые</option>
+                                                <option value="accepted">В работе</option>
+                                                <option value="completed">Выполненные</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="tasks-stats">
                                     <div className="stat-item">
                                         <span className="stat-number">{tasks.length}</span>
@@ -646,16 +799,19 @@ const ChiefDashboard = () => {
                                 </div>
 
                                 <div className="tasks-list">
-                                    {tasks.length === 0 ? (
+                                    {filteredTasks.length === 0 ? (
                                         <div className="no-tasks">
-                                            <p>Нет созданных заданий</p>
+                                            <p>{taskStatusFilter === 'all' ? 'Нет созданных заданий' : `Нет заданий со статусом "${getStatusFilterText(taskStatusFilter)}"`}</p>
                                         </div>
                                     ) : (
-                                        tasks.map(task => (
+                                        filteredTasks.map(task => (
                                             <div key={task.id} className={`task-card ${task.status}`}>
                                                 <div className="task-header">
                                                     <h4>Задание #{task.id}</h4>
                                                     <div className="task-meta">
+                                                        <span className="task-source chief-source">
+                                                            Создал: {task.created_by}
+                                                        </span>
                                                         <span className="assigned-to">Назначено: {task.assigned_to}</span>
                                                         <span className="task-date">Создано: {task.created_at}</span>
                                                         {task.completed_at && (
@@ -667,12 +823,11 @@ const ChiefDashboard = () => {
                                                     {task.description}
                                                 </div>
                                                 <div className="task-status">
-                                    <span className={`status-badge ${task.status}`}>
-                                        {task.status === 'new' && '🆕 Ожидает принятия'}
-                                        {task.status === 'accepted' && '🔄 В работе'}
-                                        {task.status === 'completed' && '✅ Выполнено'}
-                                    </span>
-                                                    {/* Убраны кнопки взаимодействия - Chief только наблюдает */}
+                                                    <span className={`status-badge ${task.status}`}>
+                                                        {task.status === 'new' && '🆕 Ожидает принятия'}
+                                                        {task.status === 'accepted' && '🔄 В работе'}
+                                                        {task.status === 'completed' && '✅ Выполнено'}
+                                                    </span>
                                                     <div className="task-info">
                                                         {task.status === 'new' && (
                                                             <span className="info-text">Ожидает принятия главой отдела</span>
