@@ -68,14 +68,14 @@ body {
 
 .header-btn:hover {
     background-color: var(--rt-white);
-    color: var(--rt-blue);
+    color: #273A64;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 .header-btn.active {
     background-color: var(--rt-white);
-    color: var(--rt-blue);
+    color: #273A64;
     box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
 }
 
@@ -137,5 +137,5 @@ body {
 
 .logout-btn:hover {
     background: white;
-    color: #0033a0;
+    color: #273A64;
 }

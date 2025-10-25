@@ -18,7 +18,7 @@
 }
 
 .form-title {
-    color: var(--rt-blue);
+    color: #273A64;
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 30px;
@@ -63,7 +63,7 @@
 
 .form-input:focus {
     outline: none;
-    border-color: var(--rt-blue);
+    border-color: #273A64;
     box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.1);
 }
 
