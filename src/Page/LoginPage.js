@@ -19,7 +19,7 @@ const mockUsers = [
         login: 'petrov',
         password: 'petrov123',
         name: 'Петров Петр Петрович',
-        role: 'analyst'
+        role: 'head_of_department'
     },
     {
         login: 'sidorova',
@@ -31,7 +31,7 @@ const mockUsers = [
         login: 'analyst',
         password: 'analyst123',
         name: 'Аналитик Анализ Анализович',
-        role: 'analyst'
+        role: 'head_of_department'
     },
     {
         login: 'kozlov',
@@ -108,7 +108,7 @@ const LoginPage = ({ onLoginSuccess, onShowRegister }) => {
         const roleNames = {
             'manager': ' (Менеджер)',
             'chief': ' (Начальник)',
-            'analyst': ' (Аналитик)',
+            'head_of_department': ' (Руководитель отдела)',
             'user': ' (Пользователь)'
         };
         return roleNames[role] || '';

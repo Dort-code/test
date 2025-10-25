@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import LoginPage from './Page/LoginPage';
 import RegisterPage from './Page/RegisterPage';
 import UserDashboard from './Page/UserPA';
-import AnaliticDashboard from './Page/AnaliticDashboard';
+import HeadOfDepartmentDashboard from './Page/HeadOfDepartmentDashboard';
 import ChiefDashboard from './Page/ChiefDashboard';
 import ManagerDashboard from "./Page/ManagerDashboard";
 import logo from './lg.png';
@@ -20,8 +20,8 @@ const App = () => {
         // Определяем какой дашборд показывать в зависимости от роли
         if (userData.role === 'manager' || userData.role === 'chief') {
             setActiveForm('chief');
-        } else if (userData.role === 'analyst') {
-            setActiveForm('analyst');
+        } else if (userData.role === 'head_of_department') {
+            setActiveForm('head_of_department');
         } else {
             setActiveForm('user');
         }
@@ -48,8 +48,8 @@ const App = () => {
                 return <ManagerDashboard user={currentUser} />;
             case 'chief':
                 return <ChiefDashboard user={currentUser} />;
-            case 'analyst':
-                return <AnaliticDashboard user={currentUser} />;
+            case 'head_of_department':
+                return <HeadOfDepartmentDashboard user={currentUser} />;
             default:
                 return <UserDashboard user={currentUser} />;
         }
@@ -60,7 +60,7 @@ const App = () => {
         const roleNames = {
             'manager': 'Менеджер',
             'chief': 'Начальник отдела',
-            'analyst': 'Аналитик',
+            'head_of_department': 'Начальник отдела',
             'user': 'Пользователь'
         };
         return roleNames[role] || role;
