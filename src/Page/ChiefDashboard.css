@@ -3,6 +3,46 @@
     background-color: #f8f9fa;
 }
 
+.dashboard-header {
+    background: linear-gradient(135deg, #0033a0 0%, #0054a6 100%);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.refresh-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .chief-nav {
     background: white;
     padding: 0 2rem;
@@ -25,47 +65,122 @@
 }
 
 .chief-nav .nav-btn:hover {
-    color: #273A64;
+    color: #0033a0;
     background-color: #f8f9fa;
 }
 
 .chief-nav .nav-btn.active {
-    color: #FF4F12;
-    border-bottom-color: #7700FF;
+    color: #0033a0;
+    border-bottom-color: #0033a0;
     background-color: #e3f2fd;
 }
 
-/* Стили для вкладки Рабочие */
-.employees-tab {
+.dashboard-main {
     padding: 2rem;
+    position: relative;
 }
 
-.employees-grid {
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    background: #0033a0;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Стили для вкладки отчетов */
+.reports-tab h2 {
+    color: #0033a0;
+    margin-bottom: 2rem;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.summary-card.total {
+    border-left: 4px solid #0033a0;
+}
+
+.summary-card h3 {
+    margin: 0 0 1rem 0;
+    color: #0033a0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0033a0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Стили для карточек отделов */
+.departments-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
-    margin-top: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-.employee-card {
+.department-card {
     background: white;
-    border-radius: 8px;
     padding: 1.5rem;
+    border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-left: 4px solid #273A64;
+    border-left: 4px solid #0033a0;
 }
 
-.employee-header {
+.department-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.employee-header h3 {
+.department-header h3 {
     margin: 0;
-    color: #273A64;
-    font-size: 1.1rem;
+    color: #0033a0;
 }
 
 .efficiency-badge {
@@ -78,603 +193,357 @@
 
 .efficiency-0 { background-color: #dc3545; }
 .efficiency-1 { background-color: #fd7e14; }
-.efficiency-2 { background-color: #ffc107; }
+.efficiency-2 { background-color: #ffc107; color: #000; }
 .efficiency-3 { background-color: #20c997; }
 .efficiency-4 { background-color: #198754; }
 
-.employee-info p {
-    margin: 0.5rem 0;
+.department-stats {
+    margin-bottom: 1rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.progress-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-item label {
+    min-width: 120px;
     font-size: 0.9rem;
+    color: #666;
 }
 
-.employee-stats {
-    margin-top: 1rem;
-}
-
-.stat-bar {
-    width: 100%;
+.progress-bar {
+    flex: 1;
     height: 8px;
-    background-color: #e9ecef;
+    background: #e9ecef;
     border-radius: 4px;
     overflow: hidden;
 }
 
-.stat-fill {
+.progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #dc3545, #fd7e14, #ffc107, #20c997, #198754);
+    background: #0033a0;
     border-radius: 4px;
     transition: width 0.3s ease;
 }
 
-/* Стили для вкладки Сводный отчёт */
-.reports-tab {
-    padding: 2rem;
+.progress-fill.efficiency {
+    background: linear-gradient(90deg, #dc3545, #fd7e14, #ffc107, #20c997, #198754);
 }
 
-.reports-placeholder {
-    background: white;
-    border-radius: 8px;
-    padding: 3rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.placeholder-content h3 {
-    color: #6c757d;
-    margin-bottom: 1rem;
-}
-
-.placeholder-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #273A64;
-}
-
-.stat-label {
-    color: #6c757d;
-    margin-top: 0.5rem;
-}
-
-/* Стили для вкладки Редактирование проектов */
-.projects-tab {
-    padding: 2rem;
-}
-
-.projects-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.project-management-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-.project-main-info h3 {
-    margin: 0 0 0.5rem 0;
-    color: #273A64;
-}
-
-.project-main-info p {
-    margin: 0.25rem 0;
-    font-size: 0.9rem;
-}
-
-.project-finance p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.project-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.action-btn {
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.edit-btn {
-    background: #FF4F12;
-    color: white;
-}
-
-.edit-btn:hover {
-    background: #FF4F12;
-}
-
-.analyze-btn {
-    background: #FF4F12;
-    color: white;
-}
-
-.analyze-btn:hover {
-    background: #FF4F12;
-}
-
-/* Стили для вкладки Аналитический дашборд */
-.analytics-tab {
-    padding: 2rem;
-}
-
-.project-selection {
-    background: white;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.project-select-card {
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.project-select-card:hover {
-    border-color: #7700FF;
-    box-shadow: 0 4px 15px rgba(0,51,160,0.1);
-    transform: translateY(-2px);
-}
-
-.project-select-card h4 {
-    margin: 0 0 0.5rem 0;
-    color: #273A64;
-}
-
-.project-select-card p {
-    margin: 0.25rem 0;
-    font-size: 0.9rem;
-}
-
-.project-metrics {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.metric {
-    padding: 0.5rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.metric.revenue {
-    background: #d4edda;
-    color: #155724;
-}
-
-.metric.stage {
-    background: #cce7ff;
-    color: #7700FF;
-}
-
-/* Диаграмма Ганта */
-.gantt-chart {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.gantt-container {
-    margin-top: 1rem;
-}
-
-.gantt-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    gap: 1rem;
-}
-
-.gantt-stage {
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-}
-
-.stage-name {
+.progress-item span {
+    min-width: 40px;
+    text-align: right;
     font-weight: 600;
-    color: #273A64;
+    color: #333;
 }
 
-.stage-date {
-    font-size: 0.8rem;
-    color: #6c757d;
+/* Стили для графиков */
+.charts-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.gantt-bar {
+.chart-card h4 {
+    color: #0033a0;
+    margin-bottom: 1rem;
+}
+
+.efficiency-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.chart-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bar-label {
+    min-width: 150px;
+    font-weight: 600;
+    color: #333;
+}
+
+.bar-container {
     flex: 1;
     height: 30px;
-    background-color: #e9ecef;
+    background: #f8f9fa;
     border-radius: 15px;
     overflow: hidden;
     position: relative;
 }
 
-.gantt-progress {
+.bar-fill {
     height: 100%;
+    background: linear-gradient(90deg, #0033a0, #0054a6);
     border-radius: 15px;
     transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 1rem;
+    min-width: 40px;
 }
 
-/* Финансовая аналитика */
-.financial-analytics {
+.bar-value {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+/* Стили для вкладки заданий */
+.tasks-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 2rem;
+}
+
+.create-task-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.create-task-section h3 {
+    color: #0033a0;
     margin-bottom: 1.5rem;
 }
 
-.revenue-analysis, .costs-analysis {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.costs-chart {
-    margin-top: 1rem;
-}
-
-.cost-item {
+.task-form {
     display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
+    flex-direction: column;
     gap: 1rem;
 }
 
-.cost-type {
-    min-width: 120px;
-    font-size: 0.9rem;
-    color: #7700FF;
-}
-
-.cost-bar {
-    flex: 1;
-    height: 20px;
-    background-color: #e9ecef;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.cost-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #dc3545, #fd7e14);
-    border-radius: 10px;
-    transition: width 0.3s ease;
-}
-
-.cost-amount {
-    min-width: 80px;
-    text-align: right;
-    font-weight: 500;
-}
-
-/* Сводная статистика */
-.summary-stats {
+.form-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.stat-card {
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-field label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: #0033a0;
+}
+
+.create-task-btn {
+    background: #0033a0;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.create-task-btn:hover:not(:disabled) {
+    background: #0054a6;
+}
+
+.create-task-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.tasks-list-section {
     background: white;
-    border-radius: 8px;
     padding: 1.5rem;
-    text-align: center;
+    border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.stat-card h5 {
-    margin: 0 0 0.5rem 0;
-    color: #6c757d;
-    font-size: 0.9rem;
+.tasks-list-section h3 {
+    color: #0033a0;
+    margin-bottom: 1.5rem;
 }
 
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #7700FF;
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
 }
 
-/* Дополнительные стили */
-.analytics-header {
+.task-card {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 4px solid #6c757d;
+}
+
+.task-card.priority-high {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+
+.task-card.priority-medium {
+    border-left-color: #fd7e14;
+    background: #fffaf0;
+}
+
+.task-card.priority-low {
+    border-left-color: #20c997;
+    background: #f0fff4;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.task-header h4 {
+    margin: 0;
+    color: #0033a0;
+    flex: 1;
+}
+
+.task-meta {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.priority-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.priority-badge.high {
+    background: #dc3545;
+    color: white;
+}
+
+.priority-badge.medium {
+    background: #fd7e14;
+    color: white;
+}
+
+.priority-badge.low {
+    background: #20c997;
+    color: white;
+}
+
+.department-badge {
+    padding: 0.25rem 0.5rem;
+    background: #6c757d;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.task-description {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+.task-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
 }
 
-.back-btn {
-    padding: 0.5rem 1rem;
-    background: #6c757d;
-    color: white;
-    border: none;
+.task-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.status-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-.back-btn:hover {
-    background: #5a6268;
+    background: white;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
     .chief-nav {
         flex-direction: column;
         padding: 0;
     }
 
-    .project-management-card {
+    .tasks-container {
         grid-template-columns: 1fr;
     }
 
-    .financial-analytics {
+    .form-row {
         grid-template-columns: 1fr;
     }
 
-    .employees-grid {
+    .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .projects-grid {
+    .departments-grid {
         grid-template-columns: 1fr;
-    }
-}
-
-/* Дополнительные стили для гистограммы с значениями на столбцах */
-.column-fill.with-value::before {
-    content: attr(data-value);
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #7700FF;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* Или можно добавить значения внутри столбцов */
-.column-fill.with-inner-value {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 5px;
-}
-
-.column-fill.with-inner-value::before {
-    content: attr(data-value);
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-}
-
-.revenue-histogram {
-    display: flex;
-    align-items: end;
-    gap: 20px;
-    height: 200px;
-    margin-top: 1rem;
-    padding: 20px 0;
-    border-bottom: 2px solid #e0e0e0;
-    position: relative;
-}
-
-.histogram-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    height: 100%;
-}
-
-.column-wrapper {
-    height: 100%;
-    display: flex;
-    align-items: end;
-    width: 40px;
-    position: relative;
-}
-
-.column-fill {
-    width: 100%;
-    background: linear-gradient(to top, #7700FF, #0054a6);
-    border-radius: 4px 4px 0 0;
-    transition: all 0.3s ease;
-    min-height: 20px;
-    position: relative;
-    cursor: pointer;
-}
-
-.column-fill:hover {
-    background: linear-gradient(to top, #7700FF, #0077cc);
-    transform: scale(1.05);
-}
-
-.column-fill::after {
-    content: attr(title);
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-.column-fill:hover::after {
-    opacity: 1;
-}
-
-.column-label {
-    margin-top: 10px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.month-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #333;
-}
-
-.amount-label {
-    font-size: 11px;
-    color: #666;
-    font-weight: 500;
-}
-
-/* Стили для затрат */
-.costs-chart {
-    margin-top: 1rem;
-}
-
-.cost-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    gap: 15px;
-}
-
-.cost-type {
-    min-width: 120px;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-}
-
-.cost-bar {
-    flex: 1;
-    height: 20px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-.cost-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #dc3545, #e74c3c);
-    border-radius: 10px;
-    transition: width 0.3s ease;
-    min-width: 20px;
-}
-
-.cost-amount {
-    min-width: 80px;
-    text-align: right;
-    font-weight: 600;
-    color: #333;
-    font-size: 14px;
-}
-
-/* Контейнер для финансовой аналитики */
-.financial-analytics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.revenue-analysis, .costs-analysis {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.revenue-analysis h4, .costs-analysis h4 {
-    color: #7700FF;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 0.5rem;
-}
-
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .financial-analytics {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .revenue-histogram {
-        gap: 10px;
-        height: 150px;
-    }
-
-    .column-wrapper {
-        width: 30px;
-    }
-
-    .cost-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .cost-bar {
-        width: 100%;
-    }
-
-    .cost-amount {
-        text-align: left;
     }
 }

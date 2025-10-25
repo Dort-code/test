@@ -4,34 +4,40 @@ import './LoginPage.css';
 // Моковые данные пользователей для демонстрации
 const mockUsers = [
     {
-        login: 'admin',
-        password: 'admin123',
-        name: 'Администратор Системы',
-        role: 'admin' // Роль admin - начальник
+        login: 'manager',
+        password: 'manager123',
+        name: 'Менеджер Системы',
+        role: 'manager'
     },
     {
         login: 'ivanov',
         password: 'ivanov123',
         name: 'Иванов Иван Иванович',
-        role: 'admin' // Роль admin - начальник
+        role: 'chief'
     },
     {
         login: 'petrov',
         password: 'petrov123',
         name: 'Петров Петр Петрович',
-        role: 'user' // Роль user - обычный пользователь
+        role: 'analyst'
     },
     {
         login: 'sidorova',
         password: 'sidorova123',
         name: 'Сидорова Мария Сергеевна',
-        role: 'user' // Роль user - обычный пользователь
+        role: 'user'
     },
     {
-        login: 'chief',
-        password: 'chief123',
-        name: 'Сергеев Сергей Сергеевич',
-        role: 'chief' // Роль chief - начальник
+        login: 'analyst',
+        password: 'analyst123',
+        name: 'Аналитик Анализ Анализович',
+        role: 'analyst'
+    },
+    {
+        login: 'kozlov',
+        password: 'kozlov123',
+        name: 'Козлов Алексей Владимирович',
+        role: 'user'
     }
 ];
 
@@ -73,7 +79,7 @@ const LoginPage = ({ onLoginSuccess, onShowRegister }) => {
                 onLoginSuccess({
                     login: user.login,
                     name: user.name,
-                    role: user.role // Используем роль из данных пользователя
+                    role: user.role
                 });
             } else {
                 setError('Неверный логин или пароль');
@@ -99,15 +105,24 @@ const LoginPage = ({ onLoginSuccess, onShowRegister }) => {
 
     // Функция для отображения роли в кнопке быстрого входа
     const getRoleDisplayName = (role) => {
-        switch(role) {
-            case 'admin':
-            case 'chief':
-                return ' (Начальник)';
-            case 'user':
-                return ' (Пользователь)';
-            default:
-                return '';
-        }
+        const roleNames = {
+            'manager': ' (Менеджер)',
+            'chief': ' (Начальник)',
+            'analyst': ' (Аналитик)',
+            'user': ' (Пользователь)'
+        };
+        return roleNames[role] || '';
+    };
+
+    // Функция для получения класса кнопки по роли
+    const getRoleButtonClass = (role) => {
+        const roleClasses = {
+            'manager': 'manager-user',
+            'chief': 'chief-user',
+            'analyst': 'analyst-user',
+            'user': 'user-user'
+        };
+        return roleClasses[role] || '';
     };
 
     return (
@@ -171,7 +186,7 @@ const LoginPage = ({ onLoginSuccess, onShowRegister }) => {
                             <button
                                 key={user.login}
                                 type="button"
-                                className={`quick-btn ${user.role === 'admin' || user.role === 'chief' ? 'chief-user' : ''}`}
+                                className={`quick-btn ${getRoleButtonClass(user.role)}`}
                                 onClick={() => handleQuickLogin(user.login)}
                                 disabled={isLoading}
                             >
