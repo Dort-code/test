@@ -25,7 +25,7 @@
 }
 
 .chief-nav .nav-btn:hover {
-    color: #7700FF;
+    color: #273A64;
     background-color: #f8f9fa;
 }
 
@@ -52,7 +52,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-left: 4px solid #7700FF;
+    border-left: 4px solid #273A64;
 }
 
 .employee-header {
@@ -64,7 +64,7 @@
 
 .employee-header h3 {
     margin: 0;
-    color: #7700FF;
+    color: #273A64;
     font-size: 1.1rem;
 }
 
@@ -140,7 +140,7 @@
 .stat-number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #7700FF;
+    color: #273A64;
 }
 
 .stat-label {
@@ -173,7 +173,7 @@
 
 .project-main-info h3 {
     margin: 0 0 0.5rem 0;
-    color: #7700FF;
+    color: #273A64;
 }
 
 .project-main-info p {
@@ -257,7 +257,7 @@
 
 .project-select-card h4 {
     margin: 0 0 0.5rem 0;
-    color: #7700FF;
+    color: #273A64;
 }
 
 .project-select-card p {
@@ -317,7 +317,7 @@
 
 .stage-name {
     font-weight: 600;
-    color: #7700FF;
+    color: #273A64;
 }
 
 .stage-date {

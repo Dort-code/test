@@ -62,7 +62,7 @@
     background: white;
     border-radius: 8px;
     padding: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color:#273A64;
 }
 
 .search-controls {
@@ -81,7 +81,7 @@
 
 .search-btn {
     padding: 0.75rem 2rem;
-    background: #FF4F12;
+    background: #7700FF;
     color: white;
     border: none;
     border-radius: 6px;
@@ -90,7 +90,7 @@
 }
 
 .search-btn:hover {
-    background: #FF4F12;
+    background:  #7700FF;
 }
 
 .search-results {
@@ -136,9 +136,9 @@
 }
 
 .form-section h2 {
-    color: #FF4F12;
+    color: #273A64;
     margin-bottom: 2rem;
-    border-bottom: 2px solid #FF4F12;
+    border-bottom: 2px solid  #273A64;
     padding-bottom: 0.5rem;
 }
 
@@ -151,7 +151,7 @@
 }
 
 .form-group h3 {
-    color: #FF4F12;
+    color: #273A64;
     margin-bottom: 1rem;
     font-size: 1.1rem;
 }
