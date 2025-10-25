@@ -81,7 +81,7 @@
 
 .search-btn {
     padding: 0.75rem 2rem;
-    background: #0033a0;
+    background: #FF4F12;
     color: white;
     border: none;
     border-radius: 6px;
@@ -90,7 +90,7 @@
 }
 
 .search-btn:hover {
-    background: #0054a6;
+    background: #FF4F12;
 }
 
 .search-results {
@@ -136,9 +136,9 @@
 }
 
 .form-section h2 {
-    color: #0033a0;
+    color: #FF4F12;
     margin-bottom: 2rem;
-    border-bottom: 2px solid #0033a0;
+    border-bottom: 2px solid #FF4F12;
     padding-bottom: 0.5rem;
 }
 
@@ -151,7 +151,7 @@
 }
 
 .form-group h3 {
-    color: #0054a6;
+    color: #FF4F12;
     margin-bottom: 1rem;
     font-size: 1.1rem;
 }
@@ -193,12 +193,12 @@
 .form-field select:focus,
 .form-field textarea:focus {
     outline: none;
-    border-color: #0033a0;
+    border-color: #273A64;
 }
 
 .disabled-field {
     background-color: #f5f5f5;
-    color: #666;
+    color: #273A64;
     cursor: not-allowed;
 }
 
@@ -250,7 +250,7 @@
 }
 
 .add-btn {
-    background: #4caf50;
+    background: #7700FF;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -260,7 +260,7 @@
 }
 
 .add-btn:hover {
-    background: #45a049;
+    background: #7700FF;
 }
 
 .char-count {
@@ -280,7 +280,7 @@
 }
 
 .save-btn {
-    background: #4caf50;
+    background: #7700FF;
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -290,7 +290,7 @@
 }
 
 .save-btn:hover {
-    background: #45a049;
+    background: #7700FF;
 }
 
 .delete-btn {

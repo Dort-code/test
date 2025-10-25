@@ -1,0 +1,680 @@
+.chief-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.chief-nav {
+    background: white;
+    padding: 0 2rem;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    gap: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chief-nav .nav-btn {
+    padding: 1rem 2rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.chief-nav .nav-btn:hover {
+    color: #0033a0;
+    background-color: #f8f9fa;
+}
+
+.chief-nav .nav-btn.active {
+    color: #0033a0;
+    border-bottom-color: #0033a0;
+    background-color: #e3f2fd;
+}
+
+/* Стили для вкладки Рабочие */
+.employees-tab {
+    padding: 2rem;
+}
+
+.employees-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.employee-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid #0033a0;
+}
+
+.employee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.employee-header h3 {
+    margin: 0;
+    color: #0033a0;
+    font-size: 1.1rem;
+}
+
+.efficiency-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.efficiency-0 { background-color: #dc3545; }
+.efficiency-1 { background-color: #fd7e14; }
+.efficiency-2 { background-color: #ffc107; }
+.efficiency-3 { background-color: #20c997; }
+.efficiency-4 { background-color: #198754; }
+
+.employee-info p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.employee-stats {
+    margin-top: 1rem;
+}
+
+.stat-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.stat-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #dc3545, #fd7e14, #ffc107, #20c997, #198754);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Стили для вкладки Сводный отчёт */
+.reports-tab {
+    padding: 2rem;
+}
+
+.reports-placeholder {
+    background: white;
+    border-radius: 8px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.placeholder-content h3 {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.placeholder-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0033a0;
+}
+
+.stat-label {
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+/* Стили для вкладки Редактирование проектов */
+.projects-tab {
+    padding: 2rem;
+}
+
+.projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.project-management-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.project-main-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #0033a0;
+}
+
+.project-main-info p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.project-finance p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.edit-btn {
+    background: #0033a0;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #0054a6;
+}
+
+.analyze-btn {
+    background: #28a745;
+    color: white;
+}
+
+.analyze-btn:hover {
+    background: #34ce57;
+}
+
+/* Стили для вкладки Аналитический дашборд */
+.analytics-tab {
+    padding: 2rem;
+}
+
+.project-selection {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.project-select-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.project-select-card:hover {
+    border-color: #0033a0;
+    box-shadow: 0 4px 15px rgba(0,51,160,0.1);
+    transform: translateY(-2px);
+}
+
+.project-select-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: #0033a0;
+}
+
+.project-select-card p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.project-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.metric {
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.metric.revenue {
+    background: #d4edda;
+    color: #155724;
+}
+
+.metric.stage {
+    background: #cce7ff;
+    color: #004085;
+}
+
+/* Диаграмма Ганта */
+.gantt-chart {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.gantt-container {
+    margin-top: 1rem;
+}
+
+.gantt-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.gantt-stage {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stage-name {
+    font-weight: 600;
+    color: #0033a0;
+}
+
+.stage-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.gantt-bar {
+    flex: 1;
+    height: 30px;
+    background-color: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.gantt-progress {
+    height: 100%;
+    border-radius: 15px;
+    transition: width 0.3s ease;
+}
+
+/* Финансовая аналитика */
+.financial-analytics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.revenue-analysis, .costs-analysis {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.costs-chart {
+    margin-top: 1rem;
+}
+
+.cost-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+
+.cost-type {
+    min-width: 120px;
+    font-size: 0.9rem;
+    color: #0033a0;
+}
+
+.cost-bar {
+    flex: 1;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.cost-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #dc3545, #fd7e14);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.cost-amount {
+    min-width: 80px;
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Сводная статистика */
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.stat-card h5 {
+    margin: 0 0 0.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0033a0;
+}
+
+/* Дополнительные стили */
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.back-btn {
+    padding: 0.5rem 1rem;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .chief-nav {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .project-management-card {
+        grid-template-columns: 1fr;
+    }
+
+    .financial-analytics {
+        grid-template-columns: 1fr;
+    }
+
+    .employees-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Дополнительные стили для гистограммы с значениями на столбцах */
+.column-fill.with-value::before {
+    content: attr(data-value);
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 51, 160, 0.9);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Или можно добавить значения внутри столбцов */
+.column-fill.with-inner-value {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5px;
+}
+
+.column-fill.with-inner-value::before {
+    content: attr(data-value);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+.revenue-histogram {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+    height: 200px;
+    margin-top: 1rem;
+    padding: 20px 0;
+    border-bottom: 2px solid #e0e0e0;
+    position: relative;
+}
+
+.histogram-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.column-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: end;
+    width: 40px;
+    position: relative;
+}
+
+.column-fill {
+    width: 100%;
+    background: linear-gradient(to top, #0033a0, #0054a6);
+    border-radius: 4px 4px 0 0;
+    transition: all 0.3s ease;
+    min-height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.column-fill:hover {
+    background: linear-gradient(to top, #0054a6, #0077cc);
+    transform: scale(1.05);
+}
+
+.column-fill::after {
+    content: attr(title);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.column-fill:hover::after {
+    opacity: 1;
+}
+
+.column-label {
+    margin-top: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.month-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.amount-label {
+    font-size: 11px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Стили для затрат */
+.costs-chart {
+    margin-top: 1rem;
+}
+
+.cost-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 15px;
+}
+
+.cost-type {
+    min-width: 120px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.cost-bar {
+    flex: 1;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.cost-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #dc3545, #e74c3c);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    min-width: 20px;
+}
+
+.cost-amount {
+    min-width: 80px;
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Контейнер для финансовой аналитики */
+.financial-analytics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.revenue-analysis, .costs-analysis {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.revenue-analysis h4, .costs-analysis h4 {
+    color: #0033a0;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .financial-analytics {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .revenue-histogram {
+        gap: 10px;
+        height: 150px;
+    }
+
+    .column-wrapper {
+        width: 30px;
+    }
+
+    .cost-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .cost-bar {
+        width: 100%;
+    }
+
+    .cost-amount {
+        text-align: left;
+    }
+}

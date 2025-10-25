@@ -33,7 +33,7 @@ body {
     left: 0;
     width: 100%;
     height: 70px;
-    background: linear-gradient(135deg, #ffbe33 0%, #a00083 100%);
+    background: linear-gradient(135deg, #E3E8EC 0%, #7700FF 100%);
     display: flex;
     justify-content: space-between;
     align-items: center;
