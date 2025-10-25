@@ -37,17 +37,17 @@
     border-bottom: 3px solid transparent;
     cursor: pointer;
     font-size: 0.9rem;
-    color: #666;
+    color: #273A64;
     transition: all 0.3s ease;
 }
 
 .nav-btn:hover {
-    color: #0033a0;
+    color: #7700FF;
 }
 
 .nav-btn.active {
-    color: #0033a0;
-    border-bottom-color: #0033a0;
+    color: #FF4F12;
+    border-bottom-color: #7700FF;
     font-weight: 600;
 }
 
@@ -175,7 +175,7 @@
 .form-field label {
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: #273A64;
     font-size: 0.9rem;
 }
 
@@ -265,7 +265,7 @@
 
 .char-count {
     font-size: 0.8rem;
-    color: #666;
+    color: #273A64;
     text-align: right;
     margin-top: 0.25rem;
 }
@@ -308,7 +308,7 @@
 }
 
 .cancel-btn {
-    background: #666;
+    background: #273A64;
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -318,7 +318,7 @@
 }
 
 .cancel-btn:hover {
-    background: #555;
+    background: #273A64;
 }
 
 /* Адаптивность */
