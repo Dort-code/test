@@ -204,21 +204,21 @@
 }
 
 .edit-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
 }
 
 .edit-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 .analyze-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
 }
 
 .analyze-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 /* Стили для вкладки Аналитический дашборд */

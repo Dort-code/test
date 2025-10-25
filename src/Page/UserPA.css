@@ -81,7 +81,7 @@
 
 .search-btn {
     padding: 0.75rem 2rem;
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     border-radius: 6px;
@@ -90,7 +90,7 @@
 }
 
 .search-btn:hover {
-    background:  #7700FF;
+    background:  #FF4F12;
 }
 
 .search-results {
@@ -116,7 +116,7 @@
 
 .edit-btn {
     padding: 0.5rem 1rem;
-    background: #0033a0;
+    background: #7700FF;
     color: white;
     border: none;
     border-radius: 4px;
@@ -124,7 +124,7 @@
 }
 
 .edit-btn:hover {
-    background: #0054a6;
+    background: #7700FF;
 }
 
 /* Стили для формы редактирования */
@@ -236,7 +236,7 @@
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background: #d32f2f;
+    background: #FF4F12;
     color: white;
     border: none;
     border-radius: 50%;
@@ -250,7 +250,7 @@
 }
 
 .add-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -260,7 +260,7 @@
 }
 
 .add-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 .char-count {
@@ -280,7 +280,7 @@
 }
 
 .save-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -290,7 +290,7 @@
 }
 
 .save-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 .delete-btn {
@@ -308,7 +308,7 @@
 }
 
 .cancel-btn {
-    background: #273A64;
+    background: #7700FF;
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -318,7 +318,7 @@
 }
 
 .cancel-btn:hover {
-    background: #273A64;
+    background: #7700FF;
 }
 
 /* Адаптивность */
