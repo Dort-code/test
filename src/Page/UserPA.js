@@ -8,7 +8,19 @@ const UserPA = () => {
     const [searchInn, setSearchInn] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
-    // Списки для выпадающих полей
+    // Состояние для заданий
+    const [tasks, setTasks] = useState([]);
+    const [tasksFilter, setTasksFilter] = useState('all');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    // Текущий пользователь (в реальном приложении получается из контекста/авторизации)
+    const currentUser = {
+        id: 3, // ID текущего пользователя (Сидорова М.С.)
+        name: 'Сидорова М.С.'
+    };
+
+    // Остальные константы и состояния без изменений
     const services = ['Интернет', 'Телефония', 'Инфобез', 'Цифровые сервисы', 'Облачные сервисы', 'Отраслевые решения'];
     const paymentTypes = ['Инсталляции', 'Сервисная', 'Оборудование', 'Разовые','Интеграционные проекты'];
     const projectStages = ['Лид', 'Подборка лида', 'КП', 'Пилот', 'Выделение финансирования', 'Закупка/торги', 'Заключение Д Д', 'Заключение РД', 'Реализация', 'Успех'];
@@ -18,7 +30,6 @@ const UserPA = () => {
     const costTypes = ['Продажа товаров', 'Прочие прямые', 'Субподряд', 'Аренда каналов', 'ГПХ', 'СВ по ГПХ', 'ПиПТ', 'Контент', 'Доставка счетов', 'Реклама', 'Комиссионные', 'РУО', 'РСД', 'Штрафы'];
     const costStatuses = ['Начислены', 'Создан резерв', 'Отражение планируется'];
 
-    // Маппинг услуг на категории
     const serviceCategories = {
         'Интернет': 'Традиционный бизнес',
         'Телефония': 'Традиционный бизнес',
@@ -28,7 +39,6 @@ const UserPA = () => {
         'Отраслевые решения': 'Проектная деятельность'
     };
 
-    // Маппинг затрат на категории
     const costCategories = {
         'Продажа товаров': 'Прямые',
         'Прочие прямые': 'Прямые',
@@ -46,18 +56,17 @@ const UserPA = () => {
         'Штрафы': 'Штрафы'
     };
 
-    // Вероятность реализации по этапам
     const stageProbabilities = {
-        'Лид' : 10,
-        'Подборка лида' : 10,
-        'КП' : 30,
-        'Пилот' : 40,
-        'Выделение финансирования' : 40,
-        'Закупка/торги' : 50,
-        'Заключение Д Д' : 70,
-        'Заключение РД' : 80,
-        'Реализация' : 90,
-        'Успех' : 100
+        'Лид': 10,
+        'Подборка лида': 10,
+        'КП': 30,
+        'Пилот': 40,
+        'Выделение финансирования': 40,
+        'Закупка/торги': 50,
+        'Заключение Д Д': 70,
+        'Заключение РД': 80,
+        'Реализация': 90,
+        'Успех': 100
     };
 
     const [formData, setFormData] = useState({
@@ -94,6 +103,152 @@ const UserPA = () => {
         nextPeriodPlans: '',
         comments: []
     });
+
+    // Загрузка заданий с бэкенда
+    const fetchTasks = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            // Имитация API запроса
+            const response = await fetch(`/api/tasks?user_id=${currentUser.id}`);
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки заданий');
+            }
+
+            const tasksData = await response.json();
+            setTasks(tasksData);
+        } catch (err) {
+            setError('Не удалось загрузить задания');
+            console.error('Error fetching tasks:', err);
+
+            // Заглушка с моковыми данными
+            const mockTasks = [
+                {
+                    id: 1,
+                    description: 'Проанализировать эффективность работы отдела продаж за последний квартал',
+                    created_by: 'Сергеев С.С.',
+                    created_by_id: 100,
+                    assigned_to: 'Сидорова М.С.',
+                    assigned_to_id: 3,
+                    status: 'accepted',
+                    created_at: '2024-03-15',
+                    completed_at: null
+                },
+                {
+                    id: 2,
+                    description: 'Подготовить отчет по выполнению плана продаж за текущий месяц',
+                    created_by: 'Петров А.В.',
+                    created_by_id: 101,
+                    assigned_to: 'Сидорова М.С.',
+                    assigned_to_id: 3,
+                    status: 'new',
+                    created_at: '2024-03-18',
+                    completed_at: null
+                },
+                {
+                    id: 3,
+                    description: 'Провести обучение новых менеджеров по продукту "Облачные сервисы"',
+                    created_by: 'Иванова О.П.',
+                    created_by_id: 102,
+                    assigned_to: 'Сидорова М.С.',
+                    assigned_to_id: 3,
+                    status: 'completed',
+                    created_at: '2024-03-10',
+                    completed_at: '2024-03-14'
+                }
+            ];
+            setTasks(mockTasks);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'tasks') {
+            fetchTasks();
+        }
+    }, [activeTab]);
+
+    // Фильтрация заданий для текущего пользователя
+    const userTasks = tasks.filter(task => task.assigned_to_id === currentUser.id);
+
+    const filteredTasks = userTasks.filter(task => {
+        if (tasksFilter === 'all') return true;
+        return task.status === tasksFilter;
+    });
+
+    // Принять задание
+    const acceptTask = async (taskId) => {
+        try {
+            const response = await fetch(`/api/tasks/${taskId}/accept`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: currentUser.id })
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка принятия задания');
+            }
+
+            setTasks(prev => prev.map(task =>
+                task.id === taskId ? { ...task, status: 'accepted' } : task
+            ));
+        } catch (err) {
+            setError('Не удалось принять задание');
+            console.error('Error accepting task:', err);
+        }
+    };
+
+    // Завершить задание
+    const completeTask = async (taskId) => {
+        try {
+            const response = await fetch(`/api/tasks/${taskId}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    completed_at: new Date().toISOString()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка завершения задания');
+            }
+
+            setTasks(prev => prev.map(task =>
+                task.id === taskId ? {
+                    ...task,
+                    status: 'completed',
+                    completed_at: new Date().toISOString().split('T')[0]
+                } : task
+            ));
+        } catch (err) {
+            setError('Не удалось завершить задание');
+            console.error('Error completing task:', err);
+        }
+    };
+
+    // Форматирование даты
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU');
+    };
+
+    // Получение текста статуса
+    const getStatusText = (status) => {
+        const statusMap = {
+            'new': '🆕 Новое',
+            'accepted': '🔄 В работе',
+            'completed': '✅ Выполнено'
+        };
+        return statusMap[status] || status;
+    };
 
     // Обработчик изменений формы
     const handleInputChange = (e) => {
@@ -265,7 +420,7 @@ const UserPA = () => {
             <header className="dashboard-header">
                 <h1>Система управления проектами</h1>
                 <div className="user-info">
-                    <span>Пользователь: Иванов И.И.</span>
+                    <span>Пользователь: {currentUser.name}</span>
                 </div>
             </header>
 
@@ -281,6 +436,12 @@ const UserPA = () => {
                     onClick={createNewProject}
                 >
                     Создать проект
+                </button>
+                <button
+                    className={`nav-btn ${activeTab === 'tasks' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('tasks')}
+                >
+                    Мои задания
                 </button>
             </nav>
 
@@ -770,6 +931,120 @@ const UserPA = () => {
                                     Отмена
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'tasks' && (
+                    <div className="tasks-tab">
+                        <div className="tasks-container">
+                            <div className="tasks-header">
+                                <h2>Мои задания</h2>
+                                <div className="tasks-filter">
+                                    <label>Фильтр по статусу:</label>
+                                    <select
+                                        value={tasksFilter}
+                                        onChange={(e) => setTasksFilter(e.target.value)}
+                                        className="status-filter-select"
+                                    >
+                                        <option value="all">Все задания</option>
+                                        <option value="new">Новые</option>
+                                        <option value="accepted">В работе</option>
+                                        <option value="completed">Выполненные</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {error && (
+                                <div className="error-message">
+                                    {error}
+                                </div>
+                            )}
+
+                            {loading ? (
+                                <div className="loading">Загрузка заданий...</div>
+                            ) : (
+                                <>
+                                    <div className="tasks-stats">
+                                        <div className="stat-item">
+                                            <span className="stat-number">{userTasks.length}</span>
+                                            <span className="stat-label">Всего заданий</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{userTasks.filter(t => t.status === 'new').length}</span>
+                                            <span className="stat-label">Новые</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{userTasks.filter(t => t.status === 'accepted').length}</span>
+                                            <span className="stat-label">В работе</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{userTasks.filter(t => t.status === 'completed').length}</span>
+                                            <span className="stat-label">Выполненные</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="tasks-list">
+                                        {filteredTasks.length === 0 ? (
+                                            <div className="no-tasks">
+                                                <p>Нет заданий с выбранным статусом</p>
+                                            </div>
+                                        ) : (
+                                            filteredTasks.map(task => (
+                                                <div key={task.id} className={`task-card ${task.status}`}>
+                                                    <div className="task-header">
+                                                        <h4>Задание #{task.id}</h4>
+                                                        <div className="task-meta">
+                                                            <span className="task-creator">
+                                                                От: {task.created_by}
+                                                            </span>
+                                                            <span className="task-date">
+                                                                Создано: {formatDate(task.created_at)}
+                                                            </span>
+                                                            {task.completed_at && (
+                                                                <span className="task-date">
+                                                                    Выполнено: {formatDate(task.completed_at)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="task-description">
+                                                        {task.description}
+                                                    </div>
+                                                    <div className="task-status-actions">
+                                                        <div className="task-status">
+                                                            <span className={`status-badge ${task.status}`}>
+                                                                {getStatusText(task.status)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="task-actions">
+                                                            {task.status === 'new' && (
+                                                                <button
+                                                                    className="action-btn accept-btn"
+                                                                    onClick={() => acceptTask(task.id)}
+                                                                >
+                                                                    Принять задание
+                                                                </button>
+                                                            )}
+                                                            {task.status === 'accepted' && (
+                                                                <button
+                                                                    className="action-btn complete-btn"
+                                                                    onClick={() => completeTask(task.id)}
+                                                                >
+                                                                    Завершить задание
+                                                                </button>
+                                                            )}
+                                                            {task.status === 'completed' && (
+                                                                <span className="completed-text">✅ Задание завершено</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}

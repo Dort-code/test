@@ -4,9 +4,9 @@ import RegisterPage from './Page/RegisterPage';
 import UserDashboard from './Page/UserPA';
 import HeadOfDepartmentDashboard from './Page/HeadOfDepartmentDashboard';
 import ChiefDashboard from './Page/ChiefDashboard';
-import ManagerDashboard from "./Page/ManagerDashboard";
 import logo from './lg.png';
 import './App.css';
+import ManagerDashboard from "./Page/ManagerDashboard";
 
 const App = () => {
     const [activeForm, setActiveForm] = useState('login');
@@ -60,7 +60,7 @@ const App = () => {
         const roleNames = {
             'manager': 'Менеджер',
             'chief': 'Начальник отдела',
-            'head_of_department': 'Начальник отдела',
+            'head_of_department': 'Начальник отделаo',
             'user': 'Пользователь'
         };
         return roleNames[role] || role;

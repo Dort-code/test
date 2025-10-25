@@ -106,6 +106,11 @@
     padding: 2rem;
 }
 
+.employees-tab h2 {
+    color: #273A64;
+    margin-bottom: 2rem;
+}
+
 .employees-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -132,6 +137,26 @@
     margin: 0;
     color: #273A64;
     font-size: 1.1rem;
+}
+
+.role-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.role-badge.head_of_department {
+    background: #dc3545;
+}
+
+.role-badge.manager {
+    background: #fd7e14;
+}
+
+.role-badge.user {
+    background: #6c757d;
 }
 
 .efficiency-badge {
@@ -171,7 +196,6 @@
     border-radius: 4px;
     transition: width 0.3s ease;
 }
-
 
 /* Стили для вкладки Сводный отчёт */
 .reports-tab {
@@ -1437,12 +1461,6 @@
     font-weight: 600;
 }
 
-.employees-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 12px;
-}
-
 .employee-card {
     display: flex;
     justify-content: space-between;
@@ -1501,55 +1519,4 @@
     background: linear-gradient(90deg, #3498db, #2ecc71);
     border-radius: 5px;
     transition: width 0.5s ease;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .department-efficiency-tab {
-        padding: 15px;
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .stat-card {
-        padding: 16px;
-    }
-
-    .department-header {
-        padding: 20px;
-    }
-
-    .department-title {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-    }
-
-    .department-title h2 {
-        font-size: 20px;
-    }
-
-    .stats-row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .department-stats,
-    .department-employees,
-    .department-progress {
-        padding: 20px;
-    }
-
-    .employees-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .employee-card {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-    }
 }

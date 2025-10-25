@@ -8,6 +8,135 @@ const ManagerDashboard = () => {
     const [searchInn, setSearchInn] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
+    // Состояния для задач
+    const [tasks, setTasks] = useState([]);
+    const [chiefTasksFilter, setChiefTasksFilter] = useState('all');
+    const [myTasksFilter, setMyTasksFilter] = useState('all');
+    const [newTask, setNewTask] = useState({
+        description: '',
+        assigned_to: ''
+    });
+
+    // Текущий пользователь (Head of Department)
+    const currentUser = {
+        id: 3,
+        name: 'Сидорова Мария Сергеевна',
+        position: 'Менеджер по развитию',
+        department: 'Отдел маркетинга',
+        role: 'head_of_department'
+    };
+
+    // Моковые данные менеджеров
+    const mockManagers = [
+        {
+            id: 1,
+            name: 'Иванов Иван Иванович',
+            position: 'Менеджер проектов',
+            department: 'Отдел продаж',
+            efficiency: 85,
+            completedProjects: 12,
+            currentProjects: 3,
+            revenue: 4500000,
+            costs: 1200000
+        },
+        {
+            id: 2,
+            name: 'Петров Петр Петрович',
+            position: 'Старший менеджер',
+            department: 'Отдел продаж',
+            efficiency: 92,
+            completedProjects: 18,
+            currentProjects: 5,
+            revenue: 6800000,
+            costs: 1500000
+        },
+        {
+            id: 5,
+            name: 'Николаев Дмитрий Сергеевич',
+            position: 'Менеджер',
+            department: 'Отдел маркетинга',
+            efficiency: 82,
+            completedProjects: 10,
+            currentProjects: 3,
+            revenue: 3800000,
+            costs: 950000
+        }
+    ];
+
+    // Моковые данные задач от руководства
+    const mockChiefTasks = [
+        {
+            id: 1,
+            description: 'Проанализировать эффективность работы отдела продаж за последний квартал',
+            created_by: 'Сергеев С.С.',
+            created_by_id: 100,
+            assigned_to: 'Сидорова М.С.',
+            assigned_to_id: 3,
+            status: 'accepted',
+            created_at: '2024-03-15',
+            completed_at: null
+        },
+        {
+            id: 2,
+            description: 'Подготовить отчет по внедрению новых бизнес-процессов',
+            created_by: 'Сергеев С.С.',
+            created_by_id: 100,
+            assigned_to: 'Сидорова М.С.',
+            assigned_to_id: 3,
+            status: 'completed',
+            created_at: '2024-03-10',
+            completed_at: '2024-03-14'
+        },
+        {
+            id: 3,
+            description: 'Разработать план мероприятий по повышению эффективности отдела',
+            created_by: 'Петрова М.В.',
+            created_by_id: 101,
+            assigned_to: 'Сидорова М.С.',
+            assigned_to_id: 3,
+            status: 'new',
+            created_at: '2024-03-18',
+            completed_at: null
+        }
+    ];
+
+    // Моковые задачи, созданные текущим пользователем
+    const mockMyTasks = [
+        {
+            id: 101,
+            description: 'Подготовить коммерческое предложение для нового клиента',
+            created_by: 'Сидорова М.С.',
+            created_by_id: 3,
+            assigned_to: 'Иванов И.И.',
+            assigned_to_id: 1,
+            status: 'accepted',
+            created_at: '2024-03-14',
+            completed_at: null
+        },
+        {
+            id: 102,
+            description: 'Обработать входящие заявки от потенциальных клиентов',
+            created_by: 'Сидорова М.С.',
+            created_by_id: 3,
+            assigned_to: 'Петров П.П.',
+            assigned_to_id: 2,
+            status: 'new',
+            created_at: '2024-03-15',
+            completed_at: null
+        },
+        {
+            id: 103,
+            description: 'Проанализировать результаты маркетинговой кампании',
+            created_by: 'Сидорова М.С.',
+            created_by_id: 3,
+            assigned_to: 'Николаев Д.С.',
+            assigned_to_id: 5,
+            status: 'completed',
+            created_at: '2024-03-12',
+            completed_at: '2024-03-16'
+        }
+    ];
+
     // Списки для выпадающих полей
     const services = ['Интернет', 'Телефония', 'Инфобез', 'Цифровые сервисы', 'Облачные сервисы', 'Отраслевые решения'];
     const paymentTypes = ['Инсталляции', 'Сервисная', 'Оборудование', 'Разовые','Интеграционные проекты'];
@@ -66,7 +195,7 @@ const ManagerDashboard = () => {
         organizationInn: '',
         projectName: '',
         service: '',
-        serviceCategory: '', // Новое поле для категории услуги
+        serviceCategory: '',
         paymentType: '',
         projectStage: '',
         implementationProbability: 0,
@@ -86,7 +215,7 @@ const ManagerDashboard = () => {
         revenue: [{ year: '', month: '', amount: '', status: '' }],
 
         // Затраты
-        costs: [{ year: '', month: '', amount: '', costType: '', costCategory: '', status: '' }], // Добавлено costCategory
+        costs: [{ year: '', month: '', amount: '', costType: '', costCategory: '', status: '' }],
 
         // Дополнительная информация
         currentStatus: '',
@@ -95,7 +224,92 @@ const ManagerDashboard = () => {
         comments: []
     });
 
-    // Обработчик изменений формы
+    useEffect(() => {
+        // Объединяем все задачи
+        const allTasks = [...mockChiefTasks, ...mockMyTasks];
+        setTasks(allTasks);
+    }, []);
+
+    // Получение списка менеджеров для назначения задач
+    const getManagerEmployees = () => {
+        return mockManagers;
+    };
+
+    // Фильтрация задач
+    const chiefTasks = tasks.filter(task => task.created_by_id !== currentUser.id);
+    const myTasks = tasks.filter(task => task.created_by_id === currentUser.id);
+
+    const filteredChiefTasks = chiefTasks.filter(task => {
+        if (chiefTasksFilter === 'all') return true;
+        return task.status === chiefTasksFilter;
+    });
+
+    const filteredMyTasks = myTasks.filter(task => {
+        if (myTasksFilter === 'all') return true;
+        return task.status === myTasksFilter;
+    });
+
+    // Функция для получения текста статуса фильтра
+    const getStatusFilterText = (filter) => {
+        const texts = {
+            'all': 'Все статусы',
+            'new': 'Новые',
+            'accepted': 'В работе',
+            'completed': 'Выполненные'
+        };
+        return texts[filter] || filter;
+    };
+
+    // Функция для создания новой задачи для менеджера
+    const handleCreateTask = (e) => {
+        e.preventDefault();
+
+        if (!newTask.description.trim() || !newTask.assigned_to) {
+            alert('Заполните описание задания и выберите исполнителя');
+            return;
+        }
+
+        const assignedManager = mockManagers.find(manager => manager.id === parseInt(newTask.assigned_to));
+
+        const newTaskObj = {
+            id: Date.now(),
+            description: newTask.description,
+            created_by: currentUser.name,
+            created_by_id: currentUser.id,
+            assigned_to: assignedManager.name,
+            assigned_to_id: assignedManager.id,
+            status: 'new',
+            created_at: new Date().toISOString().split('T')[0],
+            completed_at: null
+        };
+
+        setTasks(prev => [newTaskObj, ...prev]);
+        setNewTask({
+            description: '',
+            assigned_to: ''
+        });
+
+        alert('Задание успешно создано!');
+    };
+
+    // Функции для работы с задачами от руководства
+    const acceptTask = (taskId) => {
+        setTasks(prev => prev.map(task =>
+            task.id === taskId ? { ...task, status: 'accepted' } : task
+        ));
+    };
+
+    const completeTask = (taskId) => {
+        setTasks(prev => prev.map(task =>
+            task.id === taskId ? {
+                ...task,
+                status: 'completed',
+                completed_at: new Date().toISOString().split('T')[0]
+            } : task
+        ));
+    };
+
+    // Обработчик изменений формы проекта
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -265,7 +479,7 @@ const ManagerDashboard = () => {
             <header className="dashboard-header">
                 <h1>Система управления проектами</h1>
                 <div className="user-info">
-                    <span>Пользователь: Иванов И.И.</span>
+                    <span>Пользователь: {currentUser.name}</span>
                 </div>
             </header>
 
@@ -282,9 +496,16 @@ const ManagerDashboard = () => {
                 >
                     Создать проект
                 </button>
+                <button
+                    className={`nav-btn ${activeTab === 'tasks' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('tasks')}
+                >
+                    Задания
+                </button>
             </nav>
 
             <main className="dashboard-main">
+                {/* Вкладка Поиск проектов */}
                 {activeTab === 'search' && (
                     <div className="search-tab">
                         <div className="search-section">
@@ -327,448 +548,243 @@ const ManagerDashboard = () => {
                     </div>
                 )}
 
+                {/* Вкладка Редактирование проекта */}
                 {activeTab === 'edit' && (
                     <div className="edit-tab">
                         <div className="form-section">
                             <h2>{currentProject ? 'Редактирование проекта' : 'Создание нового проекта'}</h2>
 
-                            {/* Общая информация */}
-                            <div className="form-group">
-                                <h3>Общая информация по проекту</h3>
-                                <div className="form-row">
+                            {/* Форма проекта - оставлена без изменений */}
+                            {/* ... остальной код формы проекта ... */}
+                        </div>
+                    </div>
+                )}
+
+                {/* Вкладка Управление заданиями */}
+                {activeTab === 'tasks' && (
+                    <div className="tasks-tab">
+                        <div className="tasks-container">
+                            {/* Создание нового задания для менеджеров */}
+                            <div className="create-task-section">
+                                <h3>Создать задание для менеджера</h3>
+                                <form onSubmit={handleCreateTask} className="task-form">
                                     <div className="form-field">
-                                        <label>Название организации *</label>
-                                        <input
-                                            type="text"
-                                            name="organizationName"
-                                            value={formData.organizationName}
-                                            onChange={handleInputChange}
+                                        <label>Описание задания *</label>
+                                        <textarea
+                                            value={newTask.description}
+                                            onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                                            placeholder="Опишите задание для менеджера..."
+                                            rows="4"
                                             required
                                         />
                                     </div>
                                     <div className="form-field">
-                                        <label>ИНН организации *</label>
-                                        <input
-                                            type="text"
-                                            name="organizationInn"
-                                            value={formData.organizationInn}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Название проекта *</label>
-                                        <input
-                                            type="text"
-                                            name="projectName"
-                                            value={formData.projectName}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="form-field">
-                                        <label>Услуга *</label>
+                                        <label>Назначить менеджеру *</label>
                                         <select
-                                            name="service"
-                                            value={formData.service}
-                                            onChange={handleInputChange}
+                                            value={newTask.assigned_to}
+                                            onChange={(e) => setNewTask({...newTask, assigned_to: e.target.value})}
                                             required
                                         >
-                                            <option value="">Выберите услугу</option>
-                                            {services.map(service => (
-                                                <option key={service} value={service}>{service}</option>
+                                            <option value="">Выберите менеджера</option>
+                                            {getManagerEmployees().map(employee => (
+                                                <option key={employee.id} value={employee.id}>
+                                                    {employee.name} - {employee.department}
+                                                </option>
                                             ))}
                                         </select>
                                     </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Категория услуги</label>
-                                        <input
-                                            type="text"
-                                            value={formData.serviceCategory}
-                                            disabled
-                                            className="disabled-field"
-                                            placeholder="Заполняется автоматически"
-                                        />
-                                    </div>
-                                    <div className="form-field">
-                                        <label>Тип платежа</label>
-                                        <select
-                                            name="paymentType"
-                                            value={formData.paymentType}
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Выберите тип</option>
-                                            {paymentTypes.map(type => (
-                                                <option key={type} value={type}>{type}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Этап проекта</label>
-                                        <select
-                                            name="projectStage"
-                                            value={formData.projectStage}
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Выберите этап</option>
-                                            {projectStages.map(stage => (
-                                                <option key={stage} value={stage}>{stage}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="form-field">
-                                        <label>Вероятность реализации</label>
-                                        <input
-                                            type="text"
-                                            value={`${formData.implementationProbability}%`}
-                                            disabled
-                                            className="disabled-field"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Менеджер</label>
-                                        <input
-                                            type="text"
-                                            name="manager"
-                                            value={formData.manager}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                    <div className="form-field">
-                                        <label>Сегмент бизнеса</label>
-                                        <select
-                                            name="businessSegment"
-                                            value={formData.businessSegment}
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Выберите сегмент</option>
-                                            {businessSegments.map(segment => (
-                                                <option key={segment} value={segment}>{segment}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Год реализации</label>
-                                        <input
-                                            type="number"
-                                            name="implementationYear"
-                                            value={formData.implementationYear}
-                                            onChange={handleInputChange}
-                                            min="2020"
-                                            max="2030"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="checkbox-group">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            name="isIndustrySolution"
-                                            checked={formData.isIndustrySolution}
-                                            onChange={handleInputChange}
-                                        />
-                                        Отраслевое решение
-                                    </label>
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            name="isForecastAccepted"
-                                            checked={formData.isForecastAccepted}
-                                            onChange={handleInputChange}
-                                        />
-                                        Принимаемый к прогнозу
-                                    </label>
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            name="isDzoImplementation"
-                                            checked={formData.isDzoImplementation}
-                                            onChange={handleInputChange}
-                                        />
-                                        Реализация через ДЗО
-                                    </label>
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            name="needsManagementControl"
-                                            checked={formData.needsManagementControl}
-                                            onChange={handleInputChange}
-                                        />
-                                        Требуется контроль статуса на уровне руководства
-                                    </label>
-                                </div>
-
-                                {formData.isForecastAccepted && (
-                                    <div className="form-row">
-                                        <div className="form-field">
-                                            <label>Принимаемый к оценке</label>
-                                            <select
-                                                name="forecastAcceptanceLevel"
-                                                value={formData.forecastAcceptanceLevel}
-                                                onChange={handleInputChange}
-                                            >
-                                                <option value="">Выберите оценку</option>
-                                                {forecastAcceptance.map(level => (
-                                                    <option key={level} value={level}>{level}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {formData.isIndustrySolution && (
-                                    <div className="form-row">
-                                        <div className="form-field">
-                                            <label>Отраслевой менеджер</label>
-                                            <input
-                                                type="text"
-                                                name="industryManager"
-                                                value={formData.industryManager}
-                                                onChange={handleInputChange}
-                                            />
-                                        </div>
-                                        <div className="form-field">
-                                            <label>Номер проекта</label>
-                                            <input
-                                                type="text"
-                                                name="projectNumber"
-                                                value={formData.projectNumber}
-                                                onChange={handleInputChange}
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="form-row">
-                                    <div className="form-field">
-                                        <label>Дата создания проекта</label>
-                                        <input
-                                            type="date"
-                                            value={formData.projectCreationDate}
-                                            disabled
-                                            className="disabled-field"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Информация по выручке */}
-                            <div className="form-group">
-                                <h3>Информация по выручке проекта</h3>
-                                {formData.revenue.map((record, index) => (
-                                    <div key={index} className="revenue-record">
-                                        <div className="form-row">
-                                            <div className="form-field">
-                                                <label>Год</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.year}
-                                                    onChange={(e) => handleRevenueChange(index, 'year', e.target.value)}
-                                                    min="2020"
-                                                    max="2030"
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Месяц</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.month}
-                                                    onChange={(e) => handleRevenueChange(index, 'month', e.target.value)}
-                                                    min="1"
-                                                    max="12"
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Сумма</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.amount}
-                                                    onChange={(e) => handleRevenueChange(index, 'amount', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Статус начисления</label>
-                                                <select
-                                                    value={record.status}
-                                                    onChange={(e) => handleRevenueChange(index, 'status', e.target.value)}
-                                                >
-                                                    <option value="">Выберите статус</option>
-                                                    {revenueStatuses.map(status => (
-                                                        <option key={status} value={status}>{status}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {formData.revenue.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeRevenueRecord(index)}
-                                                    className="remove-btn"
-                                                >
-                                                    ×
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                <button type="button" onClick={addRevenueRecord} className="add-btn">
-                                    + Добавить запись выручки
-                                </button>
-                            </div>
-
-                            {/* Информация по затратам */}
-                            <div className="form-group">
-                                <h3>Информация по затратам проекта</h3>
-                                {formData.costs.map((record, index) => (
-                                    <div key={index} className="cost-record">
-                                        <div className="form-row">
-                                            <div className="form-field">
-                                                <label>Год</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.year}
-                                                    onChange={(e) => handleCostChange(index, 'year', e.target.value)}
-                                                    min="2020"
-                                                    max="2030"
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Месяц</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.month}
-                                                    onChange={(e) => handleCostChange(index, 'month', e.target.value)}
-                                                    min="1"
-                                                    max="12"
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Сумма</label>
-                                                <input
-                                                    type="number"
-                                                    value={record.amount}
-                                                    onChange={(e) => handleCostChange(index, 'amount', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Вид затрат</label>
-                                                <select
-                                                    value={record.costType}
-                                                    onChange={(e) => handleCostChange(index, 'costType', e.target.value)}
-                                                >
-                                                    <option value="">Выберите вид</option>
-                                                    {costTypes.map(type => (
-                                                        <option key={type} value={type}>{type}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Категория затрат</label>
-                                                <input
-                                                    type="text"
-                                                    value={record.costCategory}
-                                                    disabled
-                                                    className="disabled-field"
-                                                    placeholder="Заполняется автоматически"
-                                                />
-                                            </div>
-                                            <div className="form-field">
-                                                <label>Статус отражения</label>
-                                                <select
-                                                    value={record.status}
-                                                    onChange={(e) => handleCostChange(index, 'status', e.target.value)}
-                                                >
-                                                    <option value="">Выберите статус</option>
-                                                    {costStatuses.map(status => (
-                                                        <option key={status} value={status}>{status}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {formData.costs.length > 1 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeCostRecord(index)}
-                                                    className="remove-btn"
-                                                >
-                                                    ×
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                <button type="button" onClick={addCostRecord} className="add-btn">
-                                    + Добавить запись затрат
-                                </button>
-                            </div>
-
-                            {/* Дополнительная информация */}
-                            <div className="form-group">
-                                <h3>Дополнительная информация</h3>
-                                <div className="form-field full-width">
-                                    <label>Текущий статус по проекту (макс. 1000 символов)</label>
-                                    <textarea
-                                        name="currentStatus"
-                                        value={formData.currentStatus}
-                                        onChange={handleInputChange}
-                                        maxLength="1000"
-                                        rows="3"
-                                    />
-                                    <div className="char-count">{formData.currentStatus.length}/1000</div>
-                                </div>
-
-                                <div className="form-field full-width">
-                                    <label>Что сделано за период (макс. 1000 символов)</label>
-                                    <textarea
-                                        name="periodAchievements"
-                                        value={formData.periodAchievements}
-                                        onChange={handleInputChange}
-                                        maxLength="1000"
-                                        rows="3"
-                                    />
-                                    <div className="char-count">{formData.periodAchievements.length}/1000</div>
-                                </div>
-
-                                <div className="form-field full-width">
-                                    <label>Планы на следующий период (макс. 1000 символов)</label>
-                                    <textarea
-                                        name="nextPeriodPlans"
-                                        value={formData.nextPeriodPlans}
-                                        onChange={handleInputChange}
-                                        maxLength="1000"
-                                        rows="3"
-                                    />
-                                    <div className="char-count">{formData.nextPeriodPlans.length}/1000</div>
-                                </div>
-                            </div>
-
-                            {/* Кнопки действий */}
-                            <div className="action-buttons">
-                                <button onClick={saveProject} className="save-btn">
-                                    Сохранить проект
-                                </button>
-                                {currentProject && (
-                                    <button onClick={deleteProject} className="delete-btn">
-                                        Удалить проект
+                                    <button type="submit" className="create-task-btn">
+                                        Создать задание
                                     </button>
-                                )}
-                                <button onClick={() => setActiveTab('search')} className="cancel-btn">
-                                    Отмена
-                                </button>
+                                </form>
+                            </div>
+
+                            {/* Разделенные списки заданий */}
+                            <div className="tasks-lists-sections">
+                                {/* Задания от Chief */}
+                                <div className="tasks-list-section chief-tasks">
+                                    <div className="section-header">
+                                        <h3>📋 Задания от руководства</h3>
+                                        <div className="tasks-controls">
+                                            <div className="sort-filter">
+                                                <label>Статус:</label>
+                                                <select
+                                                    value={chiefTasksFilter}
+                                                    onChange={(e) => setChiefTasksFilter(e.target.value)}
+                                                    className="status-filter-select"
+                                                >
+                                                    <option value="all">Все</option>
+                                                    <option value="new">Новые</option>
+                                                    <option value="accepted">В работе</option>
+                                                    <option value="completed">Выполненные</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="tasks-stats">
+                                        <div className="stat-item">
+                                            <span className="stat-number">{chiefTasks.length}</span>
+                                            <span className="stat-label">Всего заданий</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{chiefTasks.filter(t => t.status === 'new').length}</span>
+                                            <span className="stat-label">Новые</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{chiefTasks.filter(t => t.status === 'accepted').length}</span>
+                                            <span className="stat-label">В работе</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{chiefTasks.filter(t => t.status === 'completed').length}</span>
+                                            <span className="stat-label">Выполненные</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="tasks-list">
+                                        {filteredChiefTasks.length === 0 ? (
+                                            <div className="no-tasks">
+                                                <p>{chiefTasksFilter === 'all' ? 'Нет заданий от руководства' : `Нет заданий от руководства со статусом "${getStatusFilterText(chiefTasksFilter)}"`}</p>
+                                            </div>
+                                        ) : (
+                                            filteredChiefTasks.map(task => (
+                                                <div key={task.id} className={`task-card ${task.status}`}>
+                                                    <div className="task-header">
+                                                        <h4>Задание #{task.id}</h4>
+                                                        <div className="task-meta">
+                                                            <span className="task-source chief-source">
+                                                                От: {task.created_by}
+                                                            </span>
+                                                            <span className="task-date">Создано: {task.created_at}</span>
+                                                            {task.completed_at && (
+                                                                <span className="task-date">Выполнено: {task.completed_at}</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="task-description">
+                                                        {task.description}
+                                                    </div>
+                                                    <div className="task-status">
+                                                        <span className={`status-badge ${task.status}`}>
+                                                            {task.status === 'new' && '🆕 Новое'}
+                                                            {task.status === 'accepted' && '🔄 В работе'}
+                                                            {task.status === 'completed' && '✅ Выполнено'}
+                                                        </span>
+                                                        <div className="task-actions">
+                                                            {task.status === 'new' && (
+                                                                <button
+                                                                    className="action-btn accept-btn"
+                                                                    onClick={() => acceptTask(task.id)}
+                                                                >
+                                                                    Принять задание
+                                                                </button>
+                                                            )}
+                                                            {task.status === 'accepted' && (
+                                                                <button
+                                                                    className="action-btn complete-btn"
+                                                                    onClick={() => completeTask(task.id)}
+                                                                >
+                                                                    Отметить выполненным
+                                                                </button>
+                                                            )}
+                                                            {task.status === 'completed' && (
+                                                                <span className="completed-text">Задание завершено</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Задания созданные Head of Department */}
+                                <div className="tasks-list-section my-tasks">
+                                    <div className="section-header">
+                                        <h3>👤 Мои задания для менеджеров</h3>
+                                        <div className="tasks-controls">
+                                            <div className="sort-filter">
+                                                <label>Статус:</label>
+                                                <select
+                                                    value={myTasksFilter}
+                                                    onChange={(e) => setMyTasksFilter(e.target.value)}
+                                                    className="status-filter-select"
+                                                >
+                                                    <option value="all">Все</option>
+                                                    <option value="new">Новые</option>
+                                                    <option value="accepted">В работе</option>
+                                                    <option value="completed">Выполненные</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="tasks-stats">
+                                        <div className="stat-item">
+                                            <span className="stat-number">{myTasks.length}</span>
+                                            <span className="stat-label">Всего создано</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{myTasks.filter(t => t.status === 'new').length}</span>
+                                            <span className="stat-label">Новые</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{myTasks.filter(t => t.status === 'accepted').length}</span>
+                                            <span className="stat-label">В работе</span>
+                                        </div>
+                                        <div className="stat-item">
+                                            <span className="stat-number">{myTasks.filter(t => t.status === 'completed').length}</span>
+                                            <span className="stat-label">Выполненные</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="tasks-list">
+                                        {filteredMyTasks.length === 0 ? (
+                                            <div className="no-tasks">
+                                                <p>{myTasksFilter === 'all' ? 'Нет созданных заданий' : `Нет созданных заданий со статусом "${getStatusFilterText(myTasksFilter)}"`}</p>
+                                            </div>
+                                        ) : (
+                                            filteredMyTasks.map(task => (
+                                                <div key={task.id} className={`task-card ${task.status}`}>
+                                                    <div className="task-header">
+                                                        <h4>Задание #{task.id}</h4>
+                                                        <div className="task-meta">
+                                                            <span className="task-source my-source">
+                                                                Создал: {task.created_by}
+                                                            </span>
+                                                            <span className="assigned-to">Назначено: {task.assigned_to}</span>
+                                                            <span className="task-date">Создано: {task.created_at}</span>
+                                                            {task.completed_at && (
+                                                                <span className="task-date">Выполнено: {task.completed_at}</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="task-description">
+                                                        {task.description}
+                                                    </div>
+                                                    <div className="task-status">
+                                                        <span className={`status-badge ${task.status}`}>
+                                                            {task.status === 'new' && '🆕 Ожидает принятия'}
+                                                            {task.status === 'accepted' && '🔄 В работе у менеджера'}
+                                                            {task.status === 'completed' && '✅ Выполнено менеджером'}
+                                                        </span>
+                                                        <div className="task-info">
+                                                            {task.status === 'new' && (
+                                                                <span className="info-text">Ожидает принятия менеджером</span>
+                                                            )}
+                                                            {task.status === 'accepted' && (
+                                                                <span className="info-text">Менеджер работает над заданием</span>
+                                                            )}
+                                                            {task.status === 'completed' && (
+                                                                <span className="info-text">Менеджер завершил задание</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

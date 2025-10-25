@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './HeadOfDepartmentDashboard.css';
+import './ChiefDashboard.css';
 
 const ChiefDashboard = () => {
     const [activeTab, setActiveTab] = useState('department-efficiency');
