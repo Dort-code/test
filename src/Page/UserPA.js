@@ -9,22 +9,55 @@ const UserPA = () => {
     const [searchResults, setSearchResults] = useState([]);
 
     // Списки для выпадающих полей
-    const services = ['ИТ-консалтинг', 'Разработка ПО', 'Техническая поддержка', 'Облачные решения', 'Кибербезопасность'];
-    const paymentTypes = ['Аванс', 'Поэтапная', 'По завершении', 'Ежемесячная'];
-    const projectStages = ['Инициация', 'Планирование', 'Исполнение', 'Контроль', 'Завершение'];
-    const businessSegments = ['Корпоративный', 'Государственный', 'Малый бизнес', 'Средний бизнес'];
-    const forecastAcceptance = ['Высокий', 'Средний', 'Низкий', 'Под вопросом'];
-    const revenueStatuses = ['Планируется', 'Начислена', 'Отложена', 'Отменена'];
-    const costTypes = ['Зарплата', 'Оборудование', 'Лицензии', 'Командировки', 'Прочие'];
-    const costStatuses = ['Планируются', 'Учтены', 'Отложены', 'Списаны'];
+    const services = ['Интернет', 'Телефония', 'Инфобез', 'Цифровые сервисы', 'Облачные сервисы', 'Отраслевые решения'];
+    const paymentTypes = ['Инсталляции', 'Сервисная', 'Оборудование', 'Разовые','Интеграционные проекты'];
+    const projectStages = ['Лид', 'Подборка лида', 'КП', 'Пилот', 'Выделение финансирования', 'Закупка/торги', 'Заключение Д Д', 'Заключение РД', 'Реализация', 'Успех'];
+    const businessSegments = ['Крупный сегмент', 'Госсектор', 'Малые предприятия', 'Средний сегмент'];
+    const forecastAcceptance = ['ОЦЕНКА', 'ПКМ', 'ОТТОК', 'Delete', 'ДАШ_ПКМ'];
+    const revenueStatuses = ['Начислена', 'Прогнозное начисление', 'Начисление планируется'];
+    const costTypes = ['Продажа товаров', 'Прочие прямые', 'Субподряд', 'Аренда каналов', 'ГПХ', 'СВ по ГПХ', 'ПиПТ', 'Контент', 'Доставка счетов', 'Реклама', 'Комиссионные', 'РУО', 'РСД', 'Штрафы'];
+    const costStatuses = ['Начислены', 'Создан резерв', 'Отражение планируется'];
+
+    // Маппинг услуг на категории
+    const serviceCategories = {
+        'Интернет': 'Традиционный бизнес',
+        'Телефония': 'Традиционный бизнес',
+        'Инфобез': 'Кибербез',
+        'Цифровые сервисы': 'Новый телеком',
+        'Облачные сервисы': 'Новый телеком',
+        'Отраслевые решения': 'Проектная деятельность'
+    };
+
+    // Маппинг затрат на категории
+    const costCategories = {
+        'Продажа товаров': 'Прямые',
+        'Прочие прямые': 'Прямые',
+        'Субподряд': 'Коммерческие',
+        'Аренда каналов': 'Прямые',
+        'ГПХ': 'Коммерческие',
+        'СВ по ГПХ': 'Коммерческие',
+        'ПиПТ': 'Прямые',
+        'Контент': 'Прямые',
+        'Доставка счетов': 'Прямые',
+        'Реклама': 'Коммерческие',
+        'Комиссионные': 'Коммерческие',
+        'РУО': 'Прямые',
+        'РСД': 'РСД',
+        'Штрафы': 'Штрафы'
+    };
 
     // Вероятность реализации по этапам
     const stageProbabilities = {
-        'Инициация': 10,
-        'Планирование': 30,
-        'Исполнение': 60,
-        'Контроль': 80,
-        'Завершение': 100
+        'Лид' : 10,
+        'Подборка лида' : 10,
+        'КП' : 30,
+        'Пилот' : 40,
+        'Выделение финансирования' : 40,
+        'Закупка/торги' : 50,
+        'Заключение Д Д' : 70,
+        'Заключение РД' : 80,
+        'Реализация' : 90,
+        'Успех' : 100
     };
 
     const [formData, setFormData] = useState({
@@ -33,6 +66,7 @@ const UserPA = () => {
         organizationInn: '',
         projectName: '',
         service: '',
+        serviceCategory: '', // Новое поле для категории услуги
         paymentType: '',
         projectStage: '',
         implementationProbability: 0,
@@ -52,7 +86,7 @@ const UserPA = () => {
         revenue: [{ year: '', month: '', amount: '', status: '' }],
 
         // Затраты
-        costs: [{ year: '', month: '', amount: '', costType: '', status: '' }],
+        costs: [{ year: '', month: '', amount: '', costType: '', costCategory: '', status: '' }], // Добавлено costCategory
 
         // Дополнительная информация
         currentStatus: '',
@@ -60,6 +94,54 @@ const UserPA = () => {
         nextPeriodPlans: '',
         comments: []
     });
+
+    // Обработчик изменений формы
+    const handleInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+
+        // Автоматическое обновление вероятности при изменении этапа
+        if (name === 'projectStage') {
+            setFormData(prev => ({
+                ...prev,
+                implementationProbability: stageProbabilities[value] || 0
+            }));
+        }
+
+        // Автоматическое обновление категории услуги
+        if (name === 'service') {
+            const category = serviceCategories[value] || '';
+            setFormData(prev => ({
+                ...prev,
+                serviceCategory: category
+            }));
+        }
+    };
+
+    // Обновленный обработчик для затрат с автоматической категоризацией
+    const handleCostChange = (index, field, value) => {
+        const updatedCosts = [...formData.costs];
+        updatedCosts[index][field] = value;
+
+        // Автоматическое определение категории затрат при изменении вида затрат
+        if (field === 'costType') {
+            updatedCosts[index].costCategory = costCategories[value] || '';
+        }
+
+        setFormData(prev => ({ ...prev, costs: updatedCosts }));
+    };
+
+    // Обновленная функция добавления записи затрат
+    const addCostRecord = () => {
+        setFormData(prev => ({
+            ...prev,
+            costs: [...prev.costs, { year: '', month: '', amount: '', costType: '', costCategory: '', status: '' }]
+        }));
+    };
 
     // Поиск проекта по ИНН
     const handleSearch = () => {
@@ -84,6 +166,7 @@ const UserPA = () => {
             organizationInn: '',
             projectName: '',
             service: '',
+            serviceCategory: '',
             paymentType: '',
             projectStage: '',
             implementationProbability: 0,
@@ -99,30 +182,13 @@ const UserPA = () => {
             projectNumber: '',
             projectCreationDate: new Date().toISOString().split('T')[0],
             revenue: [{ year: '', month: '', amount: '', status: '' }],
-            costs: [{ year: '', month: '', amount: '', costType: '', status: '' }],
+            costs: [{ year: '', month: '', amount: '', costType: '', costCategory: '', status: '' }],
             currentStatus: '',
             periodAchievements: '',
             nextPeriodPlans: '',
             comments: []
         });
         setActiveTab('edit');
-    };
-
-    // Обработчик изменений формы
-    const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-
-        // Автоматическое обновление вероятности при изменении этапа
-        if (name === 'projectStage') {
-            setFormData(prev => ({
-                ...prev,
-                implementationProbability: stageProbabilities[value] || 0
-            }));
-        }
     };
 
     // Добавление записи выручки
@@ -148,25 +214,12 @@ const UserPA = () => {
         setFormData(prev => ({ ...prev, revenue: updatedRevenue }));
     };
 
-    // Аналогичные функции для затрат
-    const addCostRecord = () => {
-        setFormData(prev => ({
-            ...prev,
-            costs: [...prev.costs, { year: '', month: '', amount: '', costType: '', status: '' }]
-        }));
-    };
-
+    // Удаление записи затрат
     const removeCostRecord = (index) => {
         setFormData(prev => ({
             ...prev,
             costs: prev.costs.filter((_, i) => i !== index)
         }));
-    };
-
-    const handleCostChange = (index, field, value) => {
-        const updatedCosts = [...formData.costs];
-        updatedCosts[index][field] = value;
-        setFormData(prev => ({ ...prev, costs: updatedCosts }));
     };
 
     // Сохранение проекта
@@ -258,6 +311,7 @@ const UserPA = () => {
                                                 <strong>{project.organizationName}</strong>
                                                 <span>ИНН: {project.organizationInn}</span>
                                                 <span>Проект: {project.projectName}</span>
+                                                <span>Услуга: {project.service} ({project.serviceCategory})</span>
                                             </div>
                                             <button
                                                 onClick={() => loadProject(project)}
@@ -333,6 +387,16 @@ const UserPA = () => {
 
                                 <div className="form-row">
                                     <div className="form-field">
+                                        <label>Категория услуги</label>
+                                        <input
+                                            type="text"
+                                            value={formData.serviceCategory}
+                                            disabled
+                                            className="disabled-field"
+                                            placeholder="Заполняется автоматически"
+                                        />
+                                    </div>
+                                    <div className="form-field">
                                         <label>Тип платежа</label>
                                         <select
                                             name="paymentType"
@@ -345,6 +409,9 @@ const UserPA = () => {
                                             ))}
                                         </select>
                                     </div>
+                                </div>
+
+                                <div className="form-row">
                                     <div className="form-field">
                                         <label>Этап проекта</label>
                                         <select
@@ -358,9 +425,6 @@ const UserPA = () => {
                                             ))}
                                         </select>
                                     </div>
-                                </div>
-
-                                <div className="form-row">
                                     <div className="form-field">
                                         <label>Вероятность реализации</label>
                                         <input
@@ -370,6 +434,9 @@ const UserPA = () => {
                                             className="disabled-field"
                                         />
                                     </div>
+                                </div>
+
+                                <div className="form-row">
                                     <div className="form-field">
                                         <label>Менеджер</label>
                                         <input
@@ -379,9 +446,6 @@ const UserPA = () => {
                                             onChange={handleInputChange}
                                         />
                                     </div>
-                                </div>
-
-                                <div className="form-row">
                                     <div className="form-field">
                                         <label>Сегмент бизнеса</label>
                                         <select
@@ -395,6 +459,9 @@ const UserPA = () => {
                                             ))}
                                         </select>
                                     </div>
+                                </div>
+
+                                <div className="form-row">
                                     <div className="form-field">
                                         <label>Год реализации</label>
                                         <input
@@ -609,6 +676,16 @@ const UserPA = () => {
                                                         <option key={type} value={type}>{type}</option>
                                                     ))}
                                                 </select>
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Категория затрат</label>
+                                                <input
+                                                    type="text"
+                                                    value={record.costCategory}
+                                                    disabled
+                                                    className="disabled-field"
+                                                    placeholder="Заполняется автоматически"
+                                                />
                                             </div>
                                             <div className="form-field">
                                                 <label>Статус отражения</label>
