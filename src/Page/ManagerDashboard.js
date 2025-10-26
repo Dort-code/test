@@ -548,14 +548,449 @@ const ManagerDashboard = () => {
                     </div>
                 )}
 
-                {/* Вкладка Редактирование проекта */}
                 {activeTab === 'edit' && (
                     <div className="edit-tab">
                         <div className="form-section">
                             <h2>{currentProject ? 'Редактирование проекта' : 'Создание нового проекта'}</h2>
 
-                            {/* Форма проекта - оставлена без изменений */}
-                            {/* ... остальной код формы проекта ... */}
+                            {/* Общая информация */}
+                            <div className="form-group">
+                                <h3>Общая информация по проекту</h3>
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Название организации *</label>
+                                        <input
+                                            type="text"
+                                            name="organizationName"
+                                            value={formData.organizationName}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <label>ИНН организации *</label>
+                                        <input
+                                            type="text"
+                                            name="organizationInn"
+                                            value={formData.organizationInn}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Название проекта *</label>
+                                        <input
+                                            type="text"
+                                            name="projectName"
+                                            value={formData.projectName}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <label>Услуга *</label>
+                                        <select
+                                            name="service"
+                                            value={formData.service}
+                                            onChange={handleInputChange}
+                                            required
+                                        >
+                                            <option value="">Выберите услугу</option>
+                                            {services.map(service => (
+                                                <option key={service} value={service}>{service}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Категория услуги</label>
+                                        <input
+                                            type="text"
+                                            value={formData.serviceCategory}
+                                            disabled
+                                            className="disabled-field"
+                                            placeholder="Заполняется автоматически"
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <label>Тип платежа</label>
+                                        <select
+                                            name="paymentType"
+                                            value={formData.paymentType}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="">Выберите тип</option>
+                                            {paymentTypes.map(type => (
+                                                <option key={type} value={type}>{type}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Этап проекта</label>
+                                        <select
+                                            name="projectStage"
+                                            value={formData.projectStage}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="">Выберите этап</option>
+                                            {projectStages.map(stage => (
+                                                <option key={stage} value={stage}>{stage}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="form-field">
+                                        <label>Вероятность реализации</label>
+                                        <input
+                                            type="text"
+                                            value={`${formData.implementationProbability}%`}
+                                            disabled
+                                            className="disabled-field"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Менеджер</label>
+                                        <input
+                                            type="text"
+                                            name="manager"
+                                            value={formData.manager}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="form-field">
+                                        <label>Сегмент бизнеса</label>
+                                        <select
+                                            name="businessSegment"
+                                            value={formData.businessSegment}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="">Выберите сегмент</option>
+                                            {businessSegments.map(segment => (
+                                                <option key={segment} value={segment}>{segment}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Год реализации</label>
+                                        <input
+                                            type="number"
+                                            name="implementationYear"
+                                            value={formData.implementationYear}
+                                            onChange={handleInputChange}
+                                            min="2020"
+                                            max="2030"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="checkbox-group">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="isIndustrySolution"
+                                            checked={formData.isIndustrySolution}
+                                            onChange={handleInputChange}
+                                        />
+                                        Отраслевое решение
+                                    </label>
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="isForecastAccepted"
+                                            checked={formData.isForecastAccepted}
+                                            onChange={handleInputChange}
+                                        />
+                                        Принимаемый к прогнозу
+                                    </label>
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="isDzoImplementation"
+                                            checked={formData.isDzoImplementation}
+                                            onChange={handleInputChange}
+                                        />
+                                        Реализация через ДЗО
+                                    </label>
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="needsManagementControl"
+                                            checked={formData.needsManagementControl}
+                                            onChange={handleInputChange}
+                                        />
+                                        Требуется контроль статуса на уровне руководства
+                                    </label>
+                                </div>
+
+                                {formData.isForecastAccepted && (
+                                    <div className="form-row">
+                                        <div className="form-field">
+                                            <label>Принимаемый к оценке</label>
+                                            <select
+                                                name="forecastAcceptanceLevel"
+                                                value={formData.forecastAcceptanceLevel}
+                                                onChange={handleInputChange}
+                                            >
+                                                <option value="">Выберите оценку</option>
+                                                {forecastAcceptance.map(level => (
+                                                    <option key={level} value={level}>{level}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {formData.isIndustrySolution && (
+                                    <div className="form-row">
+                                        <div className="form-field">
+                                            <label>Отраслевой менеджер</label>
+                                            <input
+                                                type="text"
+                                                name="industryManager"
+                                                value={formData.industryManager}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                        <div className="form-field">
+                                            <label>Номер проекта</label>
+                                            <input
+                                                type="text"
+                                                name="projectNumber"
+                                                value={formData.projectNumber}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="form-row">
+                                    <div className="form-field">
+                                        <label>Дата создания проекта</label>
+                                        <input
+                                            type="date"
+                                            value={formData.projectCreationDate}
+                                            disabled
+                                            className="disabled-field"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Информация по выручке */}
+                            <div className="form-group">
+                                <h3>Информация по выручке проекта</h3>
+                                {formData.revenue.map((record, index) => (
+                                    <div key={index} className="revenue-record">
+                                        <div className="form-row">
+                                            <div className="form-field">
+                                                <label>Год</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.year}
+                                                    onChange={(e) => handleRevenueChange(index, 'year', e.target.value)}
+                                                    min="2020"
+                                                    max="2030"
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Месяц</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.month}
+                                                    onChange={(e) => handleRevenueChange(index, 'month', e.target.value)}
+                                                    min="1"
+                                                    max="12"
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Сумма</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.amount}
+                                                    onChange={(e) => handleRevenueChange(index, 'amount', e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Статус начисления</label>
+                                                <select
+                                                    value={record.status}
+                                                    onChange={(e) => handleRevenueChange(index, 'status', e.target.value)}
+                                                >
+                                                    <option value="">Выберите статус</option>
+                                                    {revenueStatuses.map(status => (
+                                                        <option key={status} value={status}>{status}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            {formData.revenue.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeRevenueRecord(index)}
+                                                    className="remove-btn"
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                                <button type="button" onClick={addRevenueRecord} className="add-btn">
+                                    + Добавить запись выручки
+                                </button>
+                            </div>
+
+                            {/* Информация по затратам */}
+                            <div className="form-group">
+                                <h3>Информация по затратам проекта</h3>
+                                {formData.costs.map((record, index) => (
+                                    <div key={index} className="cost-record">
+                                        <div className="form-row">
+                                            <div className="form-field">
+                                                <label>Год</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.year}
+                                                    onChange={(e) => handleCostChange(index, 'year', e.target.value)}
+                                                    min="2020"
+                                                    max="2030"
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Месяц</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.month}
+                                                    onChange={(e) => handleCostChange(index, 'month', e.target.value)}
+                                                    min="1"
+                                                    max="12"
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Сумма</label>
+                                                <input
+                                                    type="number"
+                                                    value={record.amount}
+                                                    onChange={(e) => handleCostChange(index, 'amount', e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Вид затрат</label>
+                                                <select
+                                                    value={record.costType}
+                                                    onChange={(e) => handleCostChange(index, 'costType', e.target.value)}
+                                                >
+                                                    <option value="">Выберите вид</option>
+                                                    {costTypes.map(type => (
+                                                        <option key={type} value={type}>{type}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Категория затрат</label>
+                                                <input
+                                                    type="text"
+                                                    value={record.costCategory}
+                                                    disabled
+                                                    className="disabled-field"
+                                                    placeholder="Заполняется автоматически"
+                                                />
+                                            </div>
+                                            <div className="form-field">
+                                                <label>Статус отражения</label>
+                                                <select
+                                                    value={record.status}
+                                                    onChange={(e) => handleCostChange(index, 'status', e.target.value)}
+                                                >
+                                                    <option value="">Выберите статус</option>
+                                                    {costStatuses.map(status => (
+                                                        <option key={status} value={status}>{status}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            {formData.costs.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeCostRecord(index)}
+                                                    className="remove-btn"
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                                <button type="button" onClick={addCostRecord} className="add-btn">
+                                    + Добавить запись затрат
+                                </button>
+                            </div>
+
+                            {/* Дополнительная информация */}
+                            <div className="form-group">
+                                <h3>Дополнительная информация</h3>
+                                <div className="form-field full-width">
+                                    <label>Текущий статус по проекту (макс. 1000 символов)</label>
+                                    <textarea
+                                        name="currentStatus"
+                                        value={formData.currentStatus}
+                                        onChange={handleInputChange}
+                                        maxLength="1000"
+                                        rows="3"
+                                    />
+                                    <div className="char-count">{formData.currentStatus.length}/1000</div>
+                                </div>
+
+                                <div className="form-field full-width">
+                                    <label>Что сделано за период (макс. 1000 символов)</label>
+                                    <textarea
+                                        name="periodAchievements"
+                                        value={formData.periodAchievements}
+                                        onChange={handleInputChange}
+                                        maxLength="1000"
+                                        rows="3"
+                                    />
+                                    <div className="char-count">{formData.periodAchievements.length}/1000</div>
+                                </div>
+
+                                <div className="form-field full-width">
+                                    <label>Планы на следующий период (макс. 1000 символов)</label>
+                                    <textarea
+                                        name="nextPeriodPlans"
+                                        value={formData.nextPeriodPlans}
+                                        onChange={handleInputChange}
+                                        maxLength="1000"
+                                        rows="3"
+                                    />
+                                    <div className="char-count">{formData.nextPeriodPlans.length}/1000</div>
+                                </div>
+                            </div>
+
+                            {/* Кнопки действий */}
+                            <div className="action-buttons">
+                                <button onClick={saveProject} className="save-btn">
+                                    Сохранить проект
+                                </button>
+                                {currentProject && (
+                                    <button onClick={deleteProject} className="delete-btn">
+                                        Удалить проект
+                                    </button>
+                                )}
+                                <button onClick={() => setActiveTab('search')} className="cancel-btn">
+                                    Отмена
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
