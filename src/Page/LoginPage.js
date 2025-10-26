@@ -178,6 +178,24 @@ const LoginPage = ({ onLoginSuccess, onShowRegister }) => {
                     </button>
                 </form>
 
+                {/* Блок для быстрого тестирования (можно удалить в продакшене) */}
+                <div className="quick-login">
+                    <h4>Быстрый вход для тестирования:</h4>
+                    <div className="quick-login-buttons">
+                        {mockUsers.map(user => (
+                            <button
+                                key={user.login}
+                                type="button"
+                                className={`quick-btn ${getRoleButtonClass(user.role)}`}
+                                onClick={() => handleQuickLogin(user.login)}
+                                disabled={isLoading}
+                            >
+                                {user.name}{getRoleDisplayName(user.role)}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="login-links">
                     <button
                         type="button"
