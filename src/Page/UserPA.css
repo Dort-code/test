@@ -491,6 +491,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-bottom: 20px;
+    height: 130px;
 }
 
 .stat-item {
@@ -810,7 +811,8 @@
     background: white;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    min-width: 120px;
+    min-width: 12px;
+    height: 120px;
 }
 
 .stat-number {
