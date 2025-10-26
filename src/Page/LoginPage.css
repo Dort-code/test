@@ -220,12 +220,12 @@ input[type="tel"] {
 .link-btn {
     background: none;
     border: none;
-    color: #0033a0;
+    color: #FF4F12;
     cursor: pointer;
     text-decoration: underline;
     font-size: 14px;
 }
 
 .link-btn:hover {
-    color: #0033a0;
+    color: #FF4F12;
 }

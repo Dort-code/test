@@ -291,7 +291,7 @@
 
 .search-btn {
     padding: 0.75rem 1.5rem;
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     border-radius: 0 6px 6px 0;
@@ -301,7 +301,7 @@
 }
 
 .search-btn:hover {
-    background: #6500d6;
+    background: #FF4F12;
 }
 
 .filters-row {
@@ -473,12 +473,12 @@
 }
 
 .analyze-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
 }
 
 .analyze-btn:hover {
-    background: #6500d6;
+    background: #e6450f;
 }
 
 .view-btn {

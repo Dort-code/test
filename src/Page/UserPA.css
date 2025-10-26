@@ -37,12 +37,12 @@
     border-bottom: 3px solid transparent;
     cursor: pointer;
     font-size: 0.9rem;
-    color: #273A64;
+    color: #FF4F12;
     transition: all 0.3s ease;
 }
 
 .nav-btn:hover {
-    color: #7700FF;
+    color: #FF4F12;
 }
 
 .nav-btn.active {
@@ -90,7 +90,7 @@
 }
 
 .search-btn:hover {
-    background:  #FF4F12;
+    background: #FF4F12;
 }
 
 .search-results {
@@ -116,7 +116,7 @@
 
 .edit-btn {
     padding: 0.5rem 1rem;
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     border-radius: 4px;
@@ -124,7 +124,7 @@
 }
 
 .edit-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 /* Стили для формы редактирования */
@@ -308,7 +308,7 @@
 }
 
 .cancel-btn {
-    background: #7700FF;
+    background: #FF4F12;
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -318,7 +318,7 @@
 }
 
 .cancel-btn:hover {
-    background: #7700FF;
+    background: #FF4F12;
 }
 
 /* Адаптивность */
@@ -641,12 +641,12 @@
 }
 
 .accept-btn {
-    background: #3498db;
+    background: #FF4F12;
     color: white;
 }
 
 .accept-btn:hover {
-    background: #2980b9;
+    background: #FF4F12;
 }
 
 .complete-btn {
